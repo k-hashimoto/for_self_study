@@ -28,7 +28,7 @@ pub fn run_business_example() {
 
     // 事前分布：平均1ドル、標準偏差100ドルの正規分布
     let mut prior_mu = 10.0;
-    let mut prior_sigma = 1000.0;
+    let mut prior_sigma = 100.0;
 
     // ベイズ更新のイテレーション数
     let iterations = 100000; // メトロポリス・ヘイスティングスのサンプル数 100000
