@@ -8,14 +8,6 @@ use crate::modules::utils::{
     dot_product, hadamard_product, mean_normal_dist, stddev_normal_dist, subtract_constant,
 };
 
-
-    /*
-        todo
-        - 上のデータをRやpythonで同じアルゴでベイズ推定してこのコードと類似の値がでてくるか？
-        - データ数を50くらいに増やす。正規分布に従うサンプルを自動で生成するコードを追加する
-    */
-
-
 #[allow(dead_code)]
 pub fn run_business_example() {
     println!("[サンプル] ベイズ推定で顧客の平均購入金額を推定する");
