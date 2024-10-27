@@ -1,0 +1,569 @@
+[サンプル] ベイズ推定で顧客の平均購入金額を推定する
+自己相関抑制のためのパラメータ
+  薄化インターバル : 200
+  バーンイン : 10000
+-------------------------------
+# Processing observation 1: 41
+MCMC acceptance_ratio : 0.1255 +- 0.0009
+MCMC acceptance_ratio : 0.1258 +- 0.0009
+MCMC acceptance_ratio : 0.1237 +- 0.0009
+Updated posterior mean after observing 41: 40.34 +- 0.2737
+   Autocorrelation at lag 1: 0.0245
+   Autocorrelation at lag 2: 0.0328
+   Autocorrelation at lag 3: 0.0186
+   Autocorrelation at lag 4: -0.0523
+   Autocorrelation at lag 5: 0.0119
+   Geweke p-value = 0.8978
+   IF-value       = 1260.55(79個/100000の独立したサンプル)
+   95% Credible Interval: (20.00, 61.09)
+-------------------------------
+# Processing observation 2: 47
+MCMC acceptance_ratio : 0.0034 +- 0.0002
+MCMC acceptance_ratio : 0.0036 +- 0.0002
+MCMC acceptance_ratio : 0.0035 +- 0.0002
+Updated posterior mean after observing 47: 40.34 +- 0.0072
+   Autocorrelation at lag 1: 0.3936
+   Autocorrelation at lag 2: 0.1542
+   Autocorrelation at lag 3: 0.0718
+   Autocorrelation at lag 4: 0.0639
+   Autocorrelation at lag 5: 0.0387
+   Geweke p-value = 0.9327
+   IF-value       = 552.27(181個/100000の独立したサンプル)
+   95% Credible Interval: (39.81, 40.83)
+-------------------------------
+# Processing observation 3: 57
+MCMC acceptance_ratio : 1.0000 +- 0.0000
+MCMC acceptance_ratio : 0.0401 +- 0.0006
+MCMC acceptance_ratio : 0.2591 +- 0.0014
+Updated posterior mean after observing 57: 9223.89 +- 348.4855
+   Autocorrelation at lag 1: 0.9957
+   Autocorrelation at lag 2: 0.9914
+   Autocorrelation at lag 3: 0.9868
+   Autocorrelation at lag 4: 0.9824
+   Autocorrelation at lag 5: 0.9780
+   Geweke p-value = 0.0001
+   IF-value       = 124.21(806個/100000の独立したサンプル)
+   95% Credible Interval: (40.31, 35744.89)
+-------------------------------
+# Processing observation 4: 66
+MCMC acceptance_ratio : 0.1257 +- 0.0009
+MCMC acceptance_ratio : 0.1255 +- 0.0009
+MCMC acceptance_ratio : 0.1243 +- 0.0009
+Updated posterior mean after observing 66: 73.81 +- 0.2651
+   Autocorrelation at lag 1: -0.0129
+   Autocorrelation at lag 2: -0.0041
+   Autocorrelation at lag 3: 0.0022
+   Autocorrelation at lag 4: -0.0077
+   Autocorrelation at lag 5: -0.0213
+   Geweke p-value = 0.9948
+   IF-value       = 1479.78(67個/100000の独立したサンプル)
+   95% Credible Interval: (53.93, 92.02)
+-------------------------------
+# Processing observation 5: 49
+MCMC acceptance_ratio : 0.0041 +- 0.0002
+MCMC acceptance_ratio : 0.0034 +- 0.0002
+MCMC acceptance_ratio : 0.0034 +- 0.0002
+Updated posterior mean after observing 49: 73.79 +- 0.0068
+   Autocorrelation at lag 1: 0.4374
+   Autocorrelation at lag 2: 0.1872
+   Autocorrelation at lag 3: 0.0815
+   Autocorrelation at lag 4: 0.0348
+   Autocorrelation at lag 5: 0.0306
+   Geweke p-value = 0.8784
+   IF-value       = 530.86(188個/100000の独立したサンプル)
+   95% Credible Interval: (73.27, 74.28)
+-------------------------------
+# Processing observation 6: 28
+MCMC acceptance_ratio : 1.0000 +- 0.0000
+MCMC acceptance_ratio : 0.3917 +- 0.0015
+MCMC acceptance_ratio : 0.3650 +- 0.0015
+Updated posterior mean after observing 28: -9091.44 +- 406.4340
+   Autocorrelation at lag 1: 0.9955
+   Autocorrelation at lag 2: 0.9909
+   Autocorrelation at lag 3: 0.9865
+   Autocorrelation at lag 4: 0.9820
+   Autocorrelation at lag 5: 0.9776
+   Geweke p-value = 0.0003
+   IF-value       = 124.25(806個/100000の独立したサンプル)
+   95% Credible Interval: (-38905.11, 13915.62)
+-------------------------------
+# Processing observation 7: 47
+MCMC acceptance_ratio : 0.1257 +- 0.0009
+MCMC acceptance_ratio : 0.1268 +- 0.0009
+MCMC acceptance_ratio : 0.1260 +- 0.0009
+Updated posterior mean after observing 47: 41.87 +- 0.2661
+   Autocorrelation at lag 1: 0.0202
+   Autocorrelation at lag 2: -0.0067
+   Autocorrelation at lag 3: 0.0218
+   Autocorrelation at lag 4: -0.0134
+   Autocorrelation at lag 5: 0.0003
+   Geweke p-value = 0.9878
+   IF-value       = 1292.50(77個/100000の独立したサンプル)
+   95% Credible Interval: (22.07, 60.09)
+-------------------------------
+# Processing observation 8: 58
+MCMC acceptance_ratio : 0.0035 +- 0.0002
+MCMC acceptance_ratio : 0.0032 +- 0.0002
+MCMC acceptance_ratio : 0.0033 +- 0.0002
+Updated posterior mean after observing 58: 41.88 +- 0.0075
+   Autocorrelation at lag 1: 0.4528
+   Autocorrelation at lag 2: 0.2301
+   Autocorrelation at lag 3: 0.1029
+   Autocorrelation at lag 4: 0.0506
+   Autocorrelation at lag 5: 0.0161
+   Geweke p-value = 0.9162
+   IF-value       = 499.08(200個/100000の独立したサンプル)
+   95% Credible Interval: (41.34, 42.43)
+-------------------------------
+# Processing observation 9: 54
+MCMC acceptance_ratio : 0.3205 +- 0.0015
+MCMC acceptance_ratio : 0.7557 +- 0.0014
+MCMC acceptance_ratio : 0.3352 +- 0.0015
+Updated posterior mean after observing 54: 3060.45 +- 240.9403
+   Autocorrelation at lag 1: 0.9935
+   Autocorrelation at lag 2: 0.9876
+   Autocorrelation at lag 3: 0.9822
+   Autocorrelation at lag 4: 0.9776
+   Autocorrelation at lag 5: 0.9729
+   Geweke p-value = 0.7403
+   IF-value       = 124.68(806個/100000の独立したサンプル)
+   95% Credible Interval: (-9259.19, 29701.12)
+-------------------------------
+# Processing observation 10: 51
+MCMC acceptance_ratio : 0.1230 +- 0.0009
+MCMC acceptance_ratio : 0.1262 +- 0.0009
+MCMC acceptance_ratio : 0.1261 +- 0.0009
+Updated posterior mean after observing 51: 55.94 +- 0.2679
+   Autocorrelation at lag 1: 0.0252
+   Autocorrelation at lag 2: 0.0061
+   Autocorrelation at lag 3: 0.0151
+   Autocorrelation at lag 4: 0.0171
+   Autocorrelation at lag 5: -0.0157
+   Geweke p-value = 0.9971
+   IF-value       = 1232.09(81個/100000の独立したサンプル)
+   95% Credible Interval: (36.85, 74.99)
+-------------------------------
+# Processing observation 11: 51
+MCMC acceptance_ratio : 0.0036 +- 0.0002
+MCMC acceptance_ratio : 0.0032 +- 0.0002
+MCMC acceptance_ratio : 0.0083 +- 0.0003
+Updated posterior mean after observing 51: 55.93 +- 0.0074
+   Autocorrelation at lag 1: 0.4230
+   Autocorrelation at lag 2: 0.2694
+   Autocorrelation at lag 3: 0.1356
+   Autocorrelation at lag 4: 0.0507
+   Autocorrelation at lag 5: -0.0088
+   Geweke p-value = 0.9501
+   IF-value       = 492.71(203個/100000の独立したサンプル)
+   95% Credible Interval: (55.45, 56.46)
+-------------------------------
+# Processing observation 12: 45
+MCMC acceptance_ratio : 0.0216 +- 0.0005
+MCMC acceptance_ratio : 1.0000 +- 0.0000
+MCMC acceptance_ratio : 0.0566 +- 0.0007
+Updated posterior mean after observing 45: 4610.06 +- 300.4387
+   Autocorrelation at lag 1: 0.9959
+   Autocorrelation at lag 2: 0.9917
+   Autocorrelation at lag 3: 0.9878
+   Autocorrelation at lag 4: 0.9842
+   Autocorrelation at lag 5: 0.9800
+   Geweke p-value = 0.9403
+   IF-value       = 124.09(806個/100000の独立したサンプル)
+   95% Credible Interval: (-13382.61, 31548.99)
+-------------------------------
+# Processing observation 13: 44
+MCMC acceptance_ratio : 0.1260 +- 0.0009
+MCMC acceptance_ratio : 0.1255 +- 0.0009
+MCMC acceptance_ratio : 0.1269 +- 0.0009
+Updated posterior mean after observing 44: 48.95 +- 0.2764
+   Autocorrelation at lag 1: -0.0177
+   Autocorrelation at lag 2: 0.0085
+   Autocorrelation at lag 3: 0.0397
+   Autocorrelation at lag 4: -0.0090
+   Autocorrelation at lag 5: 0.0403
+   Geweke p-value = 0.9416
+   IF-value       = 1201.45(83個/100000の独立したサンプル)
+   95% Credible Interval: (28.47, 67.67)
+-------------------------------
+# Processing observation 14: 56
+MCMC acceptance_ratio : 0.1236 +- 0.0010
+MCMC acceptance_ratio : 0.0035 +- 0.0002
+MCMC acceptance_ratio : 0.0035 +- 0.0002
+Updated posterior mean after observing 56: 17.17 +- 10.7495
+   Autocorrelation at lag 1: 0.8548
+   Autocorrelation at lag 2: 0.7220
+   Autocorrelation at lag 3: 0.6151
+   Autocorrelation at lag 4: 0.4619
+   Autocorrelation at lag 5: 0.3543
+   Geweke p-value = 0.8555
+   IF-value       = 192.41(520個/100000の独立したサンプル)
+   95% Credible Interval: (48.35, 49.50)
+-------------------------------
+# Processing observation 15: 61
+MCMC acceptance_ratio : 0.0928 +- 0.0008
+MCMC acceptance_ratio : 0.0932 +- 0.0008
+MCMC acceptance_ratio : 0.0930 +- 0.0008
+Updated posterior mean after observing 61: 40.70 +- 0.2119
+   Autocorrelation at lag 1: -0.0091
+   Autocorrelation at lag 2: -0.0038
+   Autocorrelation at lag 3: 0.0080
+   Autocorrelation at lag 4: -0.0107
+   Autocorrelation at lag 5: 0.0212
+   Geweke p-value = 0.9521
+   IF-value       = 1335.21(74個/100000の独立したサンプル)
+   95% Credible Interval: (25.61, 56.21)
+-------------------------------
+# Processing observation 16: 60
+MCMC acceptance_ratio : 0.0063 +- 0.0002
+MCMC acceptance_ratio : 0.0058 +- 0.0002
+MCMC acceptance_ratio : 0.0043 +- 0.0002
+Updated posterior mean after observing 60: 40.72 +- 0.0058
+   Autocorrelation at lag 1: 0.5059
+   Autocorrelation at lag 2: 0.2482
+   Autocorrelation at lag 3: 0.1188
+   Autocorrelation at lag 4: 0.0672
+   Autocorrelation at lag 5: 0.0437
+   Geweke p-value = 0.9347
+   IF-value       = 454.93(220個/100000の独立したサンプル)
+   95% Credible Interval: (40.32, 41.14)
+-------------------------------
+# Processing observation 17: 51
+MCMC acceptance_ratio : 0.4503 +- 0.0016
+MCMC acceptance_ratio : 0.0243 +- 0.0005
+MCMC acceptance_ratio : 1.0000 +- 0.0000
+Updated posterior mean after observing 51: 1988.71 +- 285.2069
+   Autocorrelation at lag 1: 0.9939
+   Autocorrelation at lag 2: 0.9883
+   Autocorrelation at lag 3: 0.9826
+   Autocorrelation at lag 4: 0.9769
+   Autocorrelation at lag 5: 0.9717
+   Geweke p-value = 0.1053
+   IF-value       = 124.69(806個/100000の独立したサンプル)
+   95% Credible Interval: (-22673.41, 21603.66)
+-------------------------------
+# Processing observation 18: 48
+MCMC acceptance_ratio : 0.1264 +- 0.0009
+MCMC acceptance_ratio : 0.1238 +- 0.0009
+MCMC acceptance_ratio : 0.1244 +- 0.0009
+Updated posterior mean after observing 48: 50.13 +- 0.2707
+   Autocorrelation at lag 1: -0.0025
+   Autocorrelation at lag 2: -0.0497
+   Autocorrelation at lag 3: -0.0220
+   Autocorrelation at lag 4: 0.0259
+   Autocorrelation at lag 5: 0.0377
+   Geweke p-value = 0.9892
+   IF-value       = 1378.85(72個/100000の独立したサンプル)
+   95% Credible Interval: (31.13, 69.57)
+-------------------------------
+# Processing observation 19: 57
+MCMC acceptance_ratio : 0.0044 +- 0.0002
+MCMC acceptance_ratio : 0.0031 +- 0.0002
+MCMC acceptance_ratio : 0.0063 +- 0.0002
+Updated posterior mean after observing 57: 50.14 +- 0.0072
+   Autocorrelation at lag 1: 0.4433
+   Autocorrelation at lag 2: 0.2092
+   Autocorrelation at lag 3: 0.0773
+   Autocorrelation at lag 4: 0.0687
+   Autocorrelation at lag 5: 0.0297
+   Geweke p-value = 0.9501
+   IF-value       = 508.19(196個/100000の独立したサンプル)
+   95% Credible Interval: (49.61, 50.67)
+-------------------------------
+# Processing observation 20: 48
+MCMC acceptance_ratio : 1.0000 +- 0.0000
+MCMC acceptance_ratio : 0.0001 +- 0.0000
+MCMC acceptance_ratio : 0.0003 +- 0.0001
+Updated posterior mean after observing 48: -5442.67 +- 243.8867
+   Autocorrelation at lag 1: 0.9920
+   Autocorrelation at lag 2: 0.9849
+   Autocorrelation at lag 3: 0.9782
+   Autocorrelation at lag 4: 0.9709
+   Autocorrelation at lag 5: 0.9637
+   Geweke p-value = 0.0450
+   IF-value       = 125.24(800個/100000の独立したサンプル)
+   95% Credible Interval: (-26824.35, 50.16)
+-------------------------------
+# Processing observation 21: 65
+MCMC acceptance_ratio : 0.1260 +- 0.0009
+MCMC acceptance_ratio : 0.1249 +- 0.0009
+MCMC acceptance_ratio : 0.1252 +- 0.0009
+Updated posterior mean after observing 65: 55.79 +- 0.2770
+   Autocorrelation at lag 1: 0.0350
+   Autocorrelation at lag 2: -0.0153
+   Autocorrelation at lag 3: 0.0124
+   Autocorrelation at lag 4: -0.0406
+   Autocorrelation at lag 5: -0.0372
+   Geweke p-value = 0.9699
+   IF-value       = 1485.42(67個/100000の独立したサンプル)
+   95% Credible Interval: (36.15, 75.67)
+-------------------------------
+# Processing observation 22: 46
+MCMC acceptance_ratio : 0.0034 +- 0.0002
+MCMC acceptance_ratio : 0.0035 +- 0.0002
+MCMC acceptance_ratio : 0.0717 +- 0.0008
+Updated posterior mean after observing 46: 55.77 +- 0.0072
+   Autocorrelation at lag 1: 0.4192
+   Autocorrelation at lag 2: 0.1507
+   Autocorrelation at lag 3: 0.0949
+   Autocorrelation at lag 4: 0.0642
+   Autocorrelation at lag 5: 0.0420
+   Geweke p-value = 0.9830
+   IF-value       = 531.10(188個/100000の独立したサンプル)
+   95% Credible Interval: (55.28, 56.28)
+-------------------------------
+# Processing observation 23: 51
+MCMC acceptance_ratio : 1.0000 +- 0.0000
+MCMC acceptance_ratio : 1.0000 +- 0.0000
+MCMC acceptance_ratio : 0.0026 +- 0.0002
+Updated posterior mean after observing 51: 39193.89 +- 890.6225
+   Autocorrelation at lag 1: 0.9949
+   Autocorrelation at lag 2: 0.9900
+   Autocorrelation at lag 3: 0.9851
+   Autocorrelation at lag 4: 0.9802
+   Autocorrelation at lag 5: 0.9755
+   Geweke p-value = 0.1927
+   IF-value       = 124.41(806個/100000の独立したサンプル)
+   95% Credible Interval: (55.76, 87781.83)
+-------------------------------
+# Processing observation 24: 43
+MCMC acceptance_ratio : 1.0000 +- 0.0000
+MCMC acceptance_ratio : 1.0000 +- 0.0000
+MCMC acceptance_ratio : 1.0000 +- 0.0000
+Updated posterior mean after observing 43: 15048.43 +- 548.0917
+   Autocorrelation at lag 1: 0.9968
+   Autocorrelation at lag 2: 0.9935
+   Autocorrelation at lag 3: 0.9901
+   Autocorrelation at lag 4: 0.9866
+   Autocorrelation at lag 5: 0.9831
+   Geweke p-value = 0.6632
+   IF-value       = 123.85(813個/100000の独立したサンプル)
+   95% Credible Interval: (-15814.30, 54896.22)
+-------------------------------
+# Processing observation 25: 43
+MCMC acceptance_ratio : 0.1269 +- 0.0009
+MCMC acceptance_ratio : 0.1262 +- 0.0009
+MCMC acceptance_ratio : 0.1252 +- 0.0009
+Updated posterior mean after observing 43: 47.95 +- 0.2770
+   Autocorrelation at lag 1: 0.0550
+   Autocorrelation at lag 2: 0.0150
+   Autocorrelation at lag 3: -0.0033
+   Autocorrelation at lag 4: -0.0255
+   Autocorrelation at lag 5: 0.0188
+   Geweke p-value = 0.9777
+   IF-value       = 1205.17(82個/100000の独立したサンプル)
+   95% Credible Interval: (27.98, 67.45)
+-------------------------------
+# Processing observation 26: 54
+MCMC acceptance_ratio : 0.0037 +- 0.0002
+MCMC acceptance_ratio : 0.0034 +- 0.0002
+MCMC acceptance_ratio : 0.0033 +- 0.0002
+Updated posterior mean after observing 54: 47.96 +- 0.0072
+   Autocorrelation at lag 1: 0.4102
+   Autocorrelation at lag 2: 0.2057
+   Autocorrelation at lag 3: 0.1022
+   Autocorrelation at lag 4: 0.0119
+   Autocorrelation at lag 5: -0.0506
+   Geweke p-value = 0.9824
+   IF-value       = 572.32(174個/100000の独立したサンプル)
+   95% Credible Interval: (47.45, 48.51)
+-------------------------------
+# Processing observation 27: 40
+MCMC acceptance_ratio : 0.3568 +- 0.0015
+MCMC acceptance_ratio : 0.1796 +- 0.0012
+MCMC acceptance_ratio : 0.1962 +- 0.0013
+Updated posterior mean after observing 40: -457.79 +- 56.9755
+   Autocorrelation at lag 1: 0.9459
+   Autocorrelation at lag 2: 0.8861
+   Autocorrelation at lag 3: 0.8337
+   Autocorrelation at lag 4: 0.7747
+   Autocorrelation at lag 5: 0.7106
+   Geweke p-value = 0.9071
+   IF-value       = 145.13(689個/100000の独立したサンプル)
+   95% Credible Interval: (-7170.59, 1620.22)
+-------------------------------
+# Processing observation 28: 53
+MCMC acceptance_ratio : 0.1233 +- 0.0009
+MCMC acceptance_ratio : 0.1228 +- 0.0009
+MCMC acceptance_ratio : 0.1236 +- 0.0009
+Updated posterior mean after observing 53: 37.38 +- 0.2740
+   Autocorrelation at lag 1: 0.0069
+   Autocorrelation at lag 2: -0.0213
+   Autocorrelation at lag 3: -0.0005
+   Autocorrelation at lag 4: -0.0281
+   Autocorrelation at lag 5: 0.0193
+   Geweke p-value = 0.9848
+   IF-value       = 1417.26(70個/100000の独立したサンプル)
+   95% Credible Interval: (17.58, 56.77)
+-------------------------------
+# Processing observation 29: 75
+MCMC acceptance_ratio : 0.0035 +- 0.0002
+MCMC acceptance_ratio : 0.0037 +- 0.0002
+MCMC acceptance_ratio : 0.0079 +- 0.0003
+Updated posterior mean after observing 75: 37.40 +- 0.0077
+   Autocorrelation at lag 1: 0.4076
+   Autocorrelation at lag 2: 0.2106
+   Autocorrelation at lag 3: 0.1289
+   Autocorrelation at lag 4: 0.0980
+   Autocorrelation at lag 5: 0.0836
+   Geweke p-value = 0.9684
+   IF-value       = 472.48(211個/100000の独立したサンプル)
+   95% Credible Interval: (36.84, 37.93)
+-------------------------------
+# Processing observation 30: 50
+MCMC acceptance_ratio : 0.7144 +- 0.0014
+MCMC acceptance_ratio : 0.1335 +- 0.0011
+MCMC acceptance_ratio : 1.0000 +- 0.0000
+Updated posterior mean after observing 50: 959.46 +- 535.2277
+   Autocorrelation at lag 1: 0.9963
+   Autocorrelation at lag 2: 0.9928
+   Autocorrelation at lag 3: 0.9893
+   Autocorrelation at lag 4: 0.9856
+   Autocorrelation at lag 5: 0.9819
+   Geweke p-value = 0.0121
+   IF-value       = 123.95(813個/100000の独立したサンプル)
+   95% Credible Interval: (-37501.14, 38678.71)
+-------------------------------
+# Processing observation 31: 35
+MCMC acceptance_ratio : 0.1254 +- 0.0009
+MCMC acceptance_ratio : 0.1260 +- 0.0009
+MCMC acceptance_ratio : 0.1260 +- 0.0009
+Updated posterior mean after observing 35: 35.29 +- 0.2681
+   Autocorrelation at lag 1: -0.0100
+   Autocorrelation at lag 2: -0.0334
+   Autocorrelation at lag 3: 0.0079
+   Autocorrelation at lag 4: 0.0020
+   Autocorrelation at lag 5: -0.0086
+   Geweke p-value = 0.9747
+   IF-value       = 1473.87(67個/100000の独立したサンプル)
+   95% Credible Interval: (14.31, 54.35)
+-------------------------------
+# Processing observation 32: 43
+MCMC acceptance_ratio : 0.0034 +- 0.0002
+MCMC acceptance_ratio : 0.0033 +- 0.0002
+MCMC acceptance_ratio : 0.0038 +- 0.0002
+Updated posterior mean after observing 43: 35.29 +- 0.0073
+   Autocorrelation at lag 1: 0.3527
+   Autocorrelation at lag 2: 0.1376
+   Autocorrelation at lag 3: 0.0669
+   Autocorrelation at lag 4: 0.0142
+   Autocorrelation at lag 5: -0.0094
+   Geweke p-value = 0.9760
+   IF-value       = 635.64(157個/100000の独立したサンプル)
+   95% Credible Interval: (34.78, 35.82)
+-------------------------------
+# Processing observation 33: 53
+MCMC acceptance_ratio : 0.0127 +- 0.0004
+MCMC acceptance_ratio : 0.0840 +- 0.0009
+MCMC acceptance_ratio : 0.5865 +- 0.0016
+Updated posterior mean after observing 53: 559.28 +- 61.6307
+   Autocorrelation at lag 1: 0.9585
+   Autocorrelation at lag 2: 0.9211
+   Autocorrelation at lag 3: 0.8905
+   Autocorrelation at lag 4: 0.8578
+   Autocorrelation at lag 5: 0.8335
+   Geweke p-value = 0.7368
+   IF-value       = 136.05(735個/100000の独立したサンプル)
+   95% Credible Interval: (-2961.99, 8036.14)
+-------------------------------
+# Processing observation 34: 68
+MCMC acceptance_ratio : 0.1232 +- 0.0009
+MCMC acceptance_ratio : 0.1250 +- 0.0009
+MCMC acceptance_ratio : 0.1242 +- 0.0009
+Updated posterior mean after observing 68: 80.30 +- 0.2620
+   Autocorrelation at lag 1: 0.0054
+   Autocorrelation at lag 2: -0.0409
+   Autocorrelation at lag 3: 0.0138
+   Autocorrelation at lag 4: -0.0004
+   Autocorrelation at lag 5: -0.0219
+   Geweke p-value = 0.9860
+   IF-value       = 1479.94(67個/100000の独立したサンプル)
+   95% Credible Interval: (61.22, 99.45)
+-------------------------------
+# Processing observation 35: 48
+MCMC acceptance_ratio : 0.0036 +- 0.0002
+MCMC acceptance_ratio : 0.0100 +- 0.0003
+MCMC acceptance_ratio : 0.0034 +- 0.0002
+Updated posterior mean after observing 48: 80.28 +- 0.0073
+   Autocorrelation at lag 1: 0.4362
+   Autocorrelation at lag 2: 0.1956
+   Autocorrelation at lag 3: 0.0745
+   Autocorrelation at lag 4: 0.0351
+   Autocorrelation at lag 5: 0.0157
+   Geweke p-value = 0.9035
+   IF-value       = 536.94(186個/100000の独立したサンプル)
+   95% Credible Interval: (79.73, 80.78)
+-------------------------------
+# Processing observation 36: 46
+MCMC acceptance_ratio : 0.6563 +- 0.0015
+MCMC acceptance_ratio : 0.8063 +- 0.0012
+MCMC acceptance_ratio : 1.0000 +- 0.0000
+Updated posterior mean after observing 46: 3879.23 +- 275.4622
+   Autocorrelation at lag 1: 0.9900
+   Autocorrelation at lag 2: 0.9811
+   Autocorrelation at lag 3: 0.9726
+   Autocorrelation at lag 4: 0.9645
+   Autocorrelation at lag 5: 0.9561
+   Geweke p-value = 0.2296
+   IF-value       = 125.83(800個/100000の独立したサンプル)
+   95% Credible Interval: (-10213.27, 28671.30)
+-------------------------------
+# Processing observation 37: 44
+MCMC acceptance_ratio : 0.1232 +- 0.0009
+MCMC acceptance_ratio : 0.1232 +- 0.0009
+MCMC acceptance_ratio : 0.1251 +- 0.0009
+Updated posterior mean after observing 44: 49.24 +- 0.2728
+   Autocorrelation at lag 1: 0.0231
+   Autocorrelation at lag 2: -0.0211
+   Autocorrelation at lag 3: 0.0135
+   Autocorrelation at lag 4: -0.0093
+   Autocorrelation at lag 5: 0.0258
+   Geweke p-value = 0.9722
+   IF-value       = 1268.74(78個/100000の独立したサンプル)
+   95% Credible Interval: (29.56, 68.93)
+-------------------------------
+# Processing observation 38: 34
+MCMC acceptance_ratio : 0.0035 +- 0.0002
+MCMC acceptance_ratio : 0.0033 +- 0.0002
+MCMC acceptance_ratio : 0.0043 +- 0.0002
+Updated posterior mean after observing 34: 49.21 +- 0.0076
+   Autocorrelation at lag 1: 0.4137
+   Autocorrelation at lag 2: 0.1717
+   Autocorrelation at lag 3: 0.0385
+   Autocorrelation at lag 4: -0.0172
+   Autocorrelation at lag 5: -0.0462
+   Geweke p-value = 0.9463
+   IF-value       = 636.42(157個/100000の独立したサンプル)
+   95% Credible Interval: (48.67, 49.76)
+-------------------------------
+# Processing observation 39: 48
+MCMC acceptance_ratio : 0.0527 +- 0.0007
+MCMC acceptance_ratio : 1.0000 +- 0.0000
+MCMC acceptance_ratio : 0.7743 +- 0.0013
+Updated posterior mean after observing 48: -4194.01 +- 313.8502
+   Autocorrelation at lag 1: 0.9936
+   Autocorrelation at lag 2: 0.9870
+   Autocorrelation at lag 3: 0.9800
+   Autocorrelation at lag 4: 0.9726
+   Autocorrelation at lag 5: 0.9651
+   Geweke p-value = 0.8352
+   IF-value       = 125.04(800個/100000の独立したサンプル)
+   95% Credible Interval: (-28937.05, 14507.03)
+-------------------------------
+# Processing observation 40: 60
+MCMC acceptance_ratio : 0.1247 +- 0.0009
+MCMC acceptance_ratio : 0.1256 +- 0.0009
+MCMC acceptance_ratio : 0.1262 +- 0.0009
+Updated posterior mean after observing 60: 55.33 +- 0.2688
+   Autocorrelation at lag 1: 0.0314
+   Autocorrelation at lag 2: 0.0629
+   Autocorrelation at lag 3: 0.0394
+   Autocorrelation at lag 4: -0.0046
+   Autocorrelation at lag 5: -0.0042
+   Geweke p-value = 0.9587
+   IF-value       = 1080.21(92個/100000の独立したサンプル)
+   95% Credible Interval: (35.64, 74.65)
+-------------------------------
+観測値(顧客の購入金額-ドル) : [41.0, 47.0, 57.0, 66.0, 49.0, 28.0, 47.0, 58.0, 54.0, 51.0, 51.0, 45.0, 44.0, 56.0, 61.0, 60.0, 51.0, 48.0, 57.0, 48.0, 65.0, 46.0, 51.0, 43.0, 43.0, 54.0, 40.0, 53.0, 75.0, 50.0, 35.0, 43.0, 53.0, 68.0, 48.0, 46.0, 44.0, 34.0, 48.0, 60.0]
+観測値の平均: 50.45
+ベイズ推定された事後分布の平均値: 55.33
+事後分布の平均値 - 単純平均: 4.88
