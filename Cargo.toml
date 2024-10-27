@@ -1,0 +1,13 @@
+[package]
+name = "bays_sample"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+rand = "0.8"
+rand_distr = "0.4"
+# ndarray = "0.15"
+statrs = "0.15.0"
+
+[profile.dev]
+# warnings = "off"
