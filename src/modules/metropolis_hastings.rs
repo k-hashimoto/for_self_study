@@ -252,6 +252,7 @@ pub fn metropolis_hastings_normal_dist_v2(
     }
 }
 
+#[allow(dead_code)]
 // 事後分布の計算に使うメトロポリス・ヘイスティングスアルゴリズム
 pub fn metropolis_hastings_v4(
     iterations: usize,
@@ -400,4 +401,69 @@ pub fn credible_interval(samples: &[f64]) -> (f64, f64) {
     let upper_idx = (0.975 * sorted_samples.len() as f64).floor() as usize;
 
     (sorted_samples[lower_idx], sorted_samples[upper_idx])
+}
+
+// 尤度の計算
+// ある時点からパラメータが変化する正規分布
+pub fn likelihood(y: &[f64], tc: usize, mu1: f64, mu2: f64, sigma: f64) -> f64 {
+    let mut ll = 0.0;
+    for (i, &val) in y.iter().enumerate() {
+        let mean = if i < tc { mu1 }  else { mu2 };
+        ll += -0.5 * ((val - mean).powi(2) / sigma.powi(2)) ;
+    }
+    ll.exp()
+}
+
+// 同時事後分布の計算
+pub fn joint_posterior(y: &[f64], tc : usize, mu1: f64, mu2: f64, sigma: f64) -> f64 {
+    let prior_mu1 = normal_pdf(mu1, 50.0, 10.0);
+    let prior_mu2 = normal_pdf(mu2, 50.0, 10.0);
+
+    let prior_tc = 1.0 / (y.len() as f64);
+    let likelihood_val = likelihood(y, tc, mu1, mu2, sigma);
+
+    likelihood_val * prior_mu1 * prior_mu2 * prior_tc
+}
+
+pub fn metropolis_hastings_changepoint(y: &[f64], iterations: usize) -> (usize, f64, f64) {
+    let mut rng = rand::thread_rng();
+    let n = y.len();
+
+    // 初期パラメータ
+    let mut tc = n / 2;
+    let mut mu1 = 40.0;
+    let mut mu2 = 50.0;
+    let sigma = 10.0;
+
+    // 変化点tcの更新
+    for _ in 0..iterations {
+        let tc_new = rng.gen_range(1..n);
+        let acceptance_ratio_tc = joint_posterior(y, tc_new, mu1, mu2, sigma)
+                                / joint_posterior(y, tc, mu1, mu2, sigma);
+        if rng.gen::<f64>() < acceptance_ratio_tc  {
+            tc = tc_new;
+        }
+    }
+
+    // 平均 mu1の更新
+    for _ in 0..iterations {
+        let mu1_candidate = Normal::new(mu1, 1.0).unwrap().sample(&mut rng);
+        let acceptance_ratio_mu1 = joint_posterior(y, tc, mu1_candidate, mu2, sigma)
+                                / joint_posterior(y, tc, mu1, mu2, sigma);
+        if rng.gen::<f64>() < acceptance_ratio_mu1  {
+            mu1 = mu1_candidate;
+        }
+    }
+
+    // 平均 mu2の更新
+    for _ in 0..iterations {
+        let mu2_candidate = Normal::new(mu2, 1.0).unwrap().sample(&mut rng);
+        let acceptance_ratio_mu2 = joint_posterior(y, tc, mu1, mu2_candidate, sigma)
+                                / joint_posterior(y, tc, mu1, mu2, sigma);
+        if rng.gen::<f64>() < acceptance_ratio_mu2  {
+            mu1 = mu2_candidate;
+        }
+    }
+
+    (tc, mu1, mu2)
 }

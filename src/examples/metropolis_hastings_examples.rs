@@ -1,7 +1,8 @@
 #[allow(unused_imports)]
-use crate::modules::metropolis_hastings::{
-    normal_pdf, simple_metropolis_hastings, metropolis_hastings_normal_dist, thin_samples, autocorrelation, autocorrelation_v2, metropolis_hastings_normal_dist_v2, geweke_diagnostic_p_value, inefficiency_factor_diagnostic, credible_interval, metropolis_hastings_normal_dist_dev, metropolis_hastings_v4
-};
+// use crate::modules::metropolis_hastings::{
+//     normal_pdf, simple_metropolis_hastings, metropolis_hastings_normal_dist, thin_samples, autocorrelation, autocorrelation_v2, metropolis_hastings_normal_dist_v2, geweke_diagnostic_p_value, inefficiency_factor_diagnostic, credible_interval, metropolis_hastings_normal_dist_dev, metropolis_hastings_v4
+// };
+use crate::modules::metropolis_hastings::*;
 
 #[allow(unused_imports)]
 use crate::modules::utils::{
@@ -123,90 +124,23 @@ pub fn run_simple_normal_dist() {
 }
 
 #[allow(dead_code)]
-pub fn test_runner() {
-        // 観測データ
-        let data = vec![
-            41.0, 47.0, 57.0, 66.0, 49.0, 28.0, 47.0, 58.0, 54.0, 51.0,
-            51.0, 45.0, 44.0, 56.0, 61.0, 60.0, 51.0, 48.0, 57.0, 48.0
-        ];
+pub fn run_simple_changepoint() {
+    // ベイズ界隈で有名な英国炭鉱事故数のベイズ分析と同じもの
+    // ここではrun_business_example()の発展型として、事前事後分布は正規分布とし、メトロポリス・ヘイスティングス法を使う
 
-        // 事前分布の初期設定
-        let mut prior_mu = 50.0; // 初期の事前平均
-        let mut prior_sigma = 20.0; // 初期の事前標準偏差
+    // 目的：顧客の平均購入金額を推定する。ただし購入金額のデータは途中からジャンプしており例えば値上げが実施されたとする
+    // 前半と後半で別々の尤度を定義し、変化点と確率をパラメータとして同時事後分布を計算する
+    const DATA: [f64; 40] = [
+        41.0, 47.0, 57.0, 66.0, 49.0, 28.0, 47.0, 58.0, 54.0, 51.0,
+        51.0, 45.0, 44.0, 56.0, 61.0, 60.0, 51.0, 48.0, 57.0, 48.0,
+        65.0, 46.0, 51.0, 43.0, 43.0, 54.0, 40.0, 53.0, 75.0, 50.0,
+        35.0, 43.0, 53.0, 68.0, 48.0, 46.0, 44.0, 34.0, 48.0, 60.0
+    ];
 
-        // MHアルゴリズムのパラメータ
-        let iterations = 10000;
-        let burn_in = 5000;
-        let sigma = 10.0; // 観測誤差の標準偏差
-        let proposal_scale = 50.0; // 提案分布のスケール
-        let thinning_interval = 50;
+    let iterations = 10000;
+    let (estimated_tc, estimated_mu1, estimated_mu2) = metropolis_hastings_changepoint(&DATA, iterations);
 
-        // 観測データを逐次的に処理しながら事後分布を更新
-        for &obs in data.iter() {
-            // 初期値を現在の事前平均に設定
-            let init = prior_mu;
-
-            // メトロポリス・ヘイスティングスの実行
-            let samples = metropolis_hastings_v4(iterations, burn_in, init, obs, sigma, prior_mu, prior_sigma, proposal_scale);
-            let samples = thin_samples(&samples, thinning_interval);
-
-            // 事後分布の平均を計算
-            let posterior_mean: f64 = samples.iter().sum::<f64>() / samples.len() as f64;
-
-            // 95%信用区間の計算
-            let (lower_bound, upper_bound) = credible_interval(&samples);
-
-            println!(
-                "Observation: {}, Posterior mean: {:.2}, 95% Credible Interval: ({:.2}, {:.2})",
-                obs, posterior_mean, lower_bound, upper_bound
-            );
-
-            // 次の観測に向けて事前分布を更新
-            prior_mu = posterior_mean;
-            prior_sigma = samples.iter().map(|&x| (x - posterior_mean).powi(2)).sum::<f64>().sqrt() / samples.len() as f64;
-        }
-    // let data = 55.5;
-    // let sigma = 1.0;
-    // let init = 5.0; // MH法の初期値
-    // let iterations = 2000;
-
-    // //事前分布
-    // let prior_mu = 1.0;
-    // let prior_sigma = 10.0;
-    // let burn_in = 1000;
-    // println!("prior dist: mu = {}, sigma = {}", prior_mu, prior_sigma);
-    // //let samples = simple_metropolis_hastings(iterations, init, data, sigma);
-
-    // let generated_samples = metropolis_hastings_normal_dist_dev(
-    //     iterations,
-    //     burn_in,
-    //     init,
-    //     data,
-    //     sigma,
-    //     prior_mu,
-    //     prior_sigma,
-    // );
-    // let samples = generated_samples.0;
-    // let ac = generated_samples.1;
-
-    // println!("{:?}", samples[..5].to_vec());
-    // let proposal_mean: f64 = samples.iter().sum::<f64>() / samples.len() as f64;
-    // println!("Estimated posterior mean: {}", proposal_mean);
-    // println!("ac mean: {}",  ac.iter().sum::<f64>() / ac.len() as f64);
-
-    // println!("p-value:{:.4}", geweke_diagnostic_p_value(&samples, 0.1, 0.5));
-
-    // // サンプルデータ
-    // let samples = vec![-0.5, 0.3, 0.8, 1.2, -0.4, 0.7, 1.0, -1.2, 0.2, 0.9, -0.7, 1.1];
-
-    // // Geweke診断のp値を計算
-    // let p_value = geweke_diagnostic_p_value(&samples, 0.2, 0.5);
-
-    // // 結果の表示
-    // if p_value > 0.05 {
-    //     println!("収束している可能性が高い (p-value = {:.4})", p_value);
-    // } else {
-    //     println!("収束していない可能性がある (p-value = {:.4})", p_value);
-    // }
-
+    // 結果の表示
+    println!("推定された変化点: {}", estimated_tc);
+    println!("推定された平均: mu1 = {:.2}, mu2 = {:.2}", estimated_mu1, estimated_mu2);
 }
