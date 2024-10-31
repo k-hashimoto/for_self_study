@@ -427,13 +427,13 @@ pub fn joint_posterior(y: &[f64], tc : usize, mu1: f64, mu2: f64, sigma: f64) ->
 
 pub fn metropolis_hastings_changepoint(y: &[f64], iterations: usize) -> (usize, f64, f64) {
     let mut rng = rand::thread_rng();
-    let n = y.len();
+    let n       = y.len();
 
     // 初期パラメータ
-    let mut tc = n / 2;
+    let mut tc  = n / 2;
     let mut mu1 = 40.0;
     let mut mu2 = 50.0;
-    let sigma = 10.0;
+    let sigma   = 100.0;
 
     // 変化点tcの更新
     for _ in 0..iterations {

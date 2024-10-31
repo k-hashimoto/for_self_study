@@ -149,7 +149,11 @@ pub fn run_simple_changepoint() {
     let iterations = 10000;
     let (estimated_tc, estimated_mu1, estimated_mu2) = metropolis_hastings_changepoint(&DATA, iterations);
 
+    // 正解
+    let correct_mu1 = DATA[1..20].iter().sum::<f64>() /  DATA[1..20].len() as f64;
+    let correct_mu2 = DATA[21..].iter().sum::<f64>()  /  DATA[1..20].len() as f64;
+
     // 結果の表示
-    println!("推定された変化点: {}", estimated_tc);
-    println!("推定された平均: mu1 = {:.2}, mu2 = {:.2}", estimated_mu1, estimated_mu2);
+    println!("推定された変化点: {}(20)", estimated_tc);
+    println!("推定された平均: mu1 = {:.2}({:.2}), mu2 = {:.2}({:.2})", estimated_mu1, correct_mu1, estimated_mu2, correct_mu2);
 }
