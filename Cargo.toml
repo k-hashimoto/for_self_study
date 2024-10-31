@@ -11,3 +11,7 @@ statrs = "0.15.0"
 
 [profile.dev]
 # warnings = "off"
+
+[[bin]]
+name = "bays"
+path = "src/main_bays.rs"

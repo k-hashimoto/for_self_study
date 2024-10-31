@@ -1,7 +1,4 @@
 #[allow(unused_imports)]
-// use crate::modules::metropolis_hastings::{
-//     normal_pdf, simple_metropolis_hastings, metropolis_hastings_normal_dist, thin_samples, autocorrelation, autocorrelation_v2, metropolis_hastings_normal_dist_v2, geweke_diagnostic_p_value, inefficiency_factor_diagnostic, credible_interval, metropolis_hastings_normal_dist_dev, metropolis_hastings_v4
-// };
 use crate::modules::metropolis_hastings::*;
 
 #[allow(unused_imports)]
