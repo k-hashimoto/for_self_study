@@ -324,8 +324,6 @@ pub fn metropolis_hastings_v4(
     } else {
         samples // バーンインがサンプル数を超える場合は全サンプル
     }
-
-
 }
 
 
@@ -425,7 +423,7 @@ pub fn joint_posterior(y: &[f64], tc : usize, mu1: f64, mu2: f64, sigma: f64) ->
     likelihood_val * prior_mu1 * prior_mu2 * prior_tc
 }
 
-pub fn metropolis_hastings_changepoint(y: &[f64], iterations: usize) -> (usize, f64, f64) {
+pub fn metropolis_hastings_changepoint(y: &[f64], iterations: usize, burn_in: usize, thinning_interval: usize) -> (usize, f64, f64) {
     let mut rng = rand::thread_rng();
     let n       = y.len();
 
@@ -435,8 +433,12 @@ pub fn metropolis_hastings_changepoint(y: &[f64], iterations: usize) -> (usize, 
     let mut mu2 = 60.0;
     let sigma   = 100.0;
 
+    let mut tc_samples = Vec::new();
+    let mut m1_samples = Vec::new();
+    let mut m2_samples = Vec::new();
+
     // 変化点tcの更新
-    for _ in 0..iterations {
+    for i in 0..iterations {
         let tc_new = rng.gen_range(1..n);
         let acceptance_ratio_tc = joint_posterior(y, tc_new, mu1, mu2, sigma)
                                 / joint_posterior(y, tc, mu1, mu2, sigma);
@@ -457,7 +459,22 @@ pub fn metropolis_hastings_changepoint(y: &[f64], iterations: usize) -> (usize, 
         if rng.gen::<f64>() < acceptance_ratio_mu2  {
             mu2 = mu2_candidate;
         }
+
+        if i >= burn_in {
+            tc_samples.push(tc);
+            m1_samples.push(mu1);
+            m2_samples.push(mu2);
+        }
+
     }
 
-    (tc, mu1, mu2)
+    let thined_tc_samples: Vec<_> = tc_samples.iter().step_by(thinning_interval).copied().collect();
+    let thined_m1_samples: Vec<_> = m1_samples.iter().step_by(thinning_interval).copied().collect();
+    let thined_m2_samples: Vec<_> = m2_samples.iter().step_by(thinning_interval).copied().collect();
+
+    let estimated_tc = thined_tc_samples.iter().sum::<usize>() / thined_tc_samples.len();
+    let estimated_m1 = thined_m1_samples.iter().sum::<f64>() / thined_m1_samples.len() as f64;
+    let estimated_m2 = thined_m2_samples.iter().sum::<f64>() / thined_m2_samples.len() as f64;
+
+    (estimated_tc, estimated_m1, estimated_m2)
 }

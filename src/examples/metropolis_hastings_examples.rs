@@ -137,8 +137,11 @@ pub fn run_simple_changepoint() {
         46.0 + 10.0, 44.0 + 10.0, 34.0 + 10.0, 48.0 + 10.0, 60.0 + 10.0
     ];
 
-    let iterations = 10000;
-    let (estimated_tc, estimated_mu1, estimated_mu2) = metropolis_hastings_changepoint(&DATA, iterations);
+    let iterations = 100000;
+    let burn_in    = 50000;
+    let thinning_interval = 10;
+
+    let (estimated_tc, estimated_mu1, estimated_mu2) = metropolis_hastings_changepoint(&DATA, iterations, burn_in, thinning_interval);
 
     // 正解
     let correct_mu1 = DATA[1..20].iter().sum::<f64>() /  DATA[1..20].len() as f64;
