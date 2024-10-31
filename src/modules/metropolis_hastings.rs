@@ -419,7 +419,7 @@ pub fn joint_posterior(y: &[f64], tc : usize, mu1: f64, mu2: f64, sigma: f64) ->
     let prior_mu1 = normal_pdf(mu1, 50.0, 10.0);
     let prior_mu2 = normal_pdf(mu2, 50.0, 10.0);
 
-    let prior_tc = 1.0 / (y.len() as f64);
+    let prior_tc  = 1.0 / (y.len() as f64);
     let likelihood_val = likelihood(y, tc, mu1, mu2, sigma);
 
     likelihood_val * prior_mu1 * prior_mu2 * prior_tc
@@ -431,8 +431,8 @@ pub fn metropolis_hastings_changepoint(y: &[f64], iterations: usize) -> (usize, 
 
     // 初期パラメータ
     let mut tc  = n / 2;
-    let mut mu1 = 40.0;
-    let mut mu2 = 50.0;
+    let mut mu1 = 50.0;
+    let mut mu2 = 60.0;
     let sigma   = 100.0;
 
     // 変化点tcの更新
@@ -443,25 +443,19 @@ pub fn metropolis_hastings_changepoint(y: &[f64], iterations: usize) -> (usize, 
         if rng.gen::<f64>() < acceptance_ratio_tc  {
             tc = tc_new;
         }
-    }
 
-    // 平均 mu1の更新
-    for _ in 0..iterations {
-        let mu1_candidate = Normal::new(mu1, 1.0).unwrap().sample(&mut rng);
+        let mu1_candidate = Normal::new(mu1, 100.0).unwrap().sample(&mut rng);
         let acceptance_ratio_mu1 = joint_posterior(y, tc, mu1_candidate, mu2, sigma)
-                                / joint_posterior(y, tc, mu1, mu2, sigma);
+                                 / joint_posterior(y, tc, mu1,           mu2, sigma);
         if rng.gen::<f64>() < acceptance_ratio_mu1  {
             mu1 = mu1_candidate;
         }
-    }
 
-    // 平均 mu2の更新
-    for _ in 0..iterations {
-        let mu2_candidate = Normal::new(mu2, 1.0).unwrap().sample(&mut rng);
+        let mu2_candidate = Normal::new(mu2, 100.0).unwrap().sample(&mut rng);
         let acceptance_ratio_mu2 = joint_posterior(y, tc, mu1, mu2_candidate, sigma)
-                                / joint_posterior(y, tc, mu1, mu2, sigma);
+                                 / joint_posterior(y, tc, mu1, mu2,           sigma);
         if rng.gen::<f64>() < acceptance_ratio_mu2  {
-            mu1 = mu2_candidate;
+            mu2 = mu2_candidate;
         }
     }
 

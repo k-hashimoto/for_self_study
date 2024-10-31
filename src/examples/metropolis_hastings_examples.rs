@@ -96,15 +96,15 @@ pub fn run_business_example() {
 
 #[allow(dead_code)]
 pub fn run_simple_normal_dist() {
-    let data = 5.5;
+    let data  = 5.5;
     let sigma = 1.0;
-    let init = 5.0; // MH法の初期値
-    let iterations = 10000;
+    let init  = 5.0; // MH法の初期値
+    let iterations = 100000;
 
     //事前分布
-    let prior_mu = 1.0;
+    let prior_mu    = 1.0;
     let prior_sigma = 10.0;
-    let burn_in = iterations * 2;
+    let burn_in = 5000;
     println!("prior dist: mu = {}, sigma = {}", prior_mu, prior_sigma);
     //let samples = simple_metropolis_hastings(iterations, init, data, sigma);
 
@@ -130,12 +130,6 @@ pub fn run_simple_changepoint() {
 
     // 目的：顧客の平均購入金額を推定する。ただし購入金額のデータは途中からジャンプしており例えば値上げが実施されたとする
     // 前半と後半で別々の尤度を定義し、変化点と確率をパラメータとして同時事後分布を計算する
-    // const DATA: [f64; 40] = [
-    //     41.0, 47.0, 57.0, 66.0, 49.0, 28.0, 47.0, 58.0, 54.0, 51.0,
-    //     51.0, 45.0, 44.0, 56.0, 61.0, 60.0, 51.0, 48.0, 57.0, 48.0,
-    //     65.0, 46.0, 51.0, 43.0, 43.0, 54.0, 40.0, 53.0, 75.0, 50.0,
-    //     35.0, 43.0, 53.0, 68.0, 48.0, 46.0, 44.0, 34.0, 48.0, 60.0
-    // ];
     // 観測データ（真ん中から+10変化）
     const DATA: [f64; 40] = [
         41.0, 47.0, 57.0, 66.0, 49.0, 28.0, 47.0, 58.0, 54.0, 51.0,
