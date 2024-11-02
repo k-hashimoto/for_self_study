@@ -24,3 +24,8 @@ path = "src/trial_dtree.rs"
 [[bin]]
 name = "trial_self_attention"
 path = "src/trial_self_attention.rs"
+
+[[bin]]
+name = "uk_coal_chagepoint"
+path = "src/uk_coal_chagepoint.rs"
+

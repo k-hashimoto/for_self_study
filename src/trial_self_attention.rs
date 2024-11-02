@@ -1,5 +1,5 @@
 use ndarray::prelude::*;
-use ndarray::Array2;
+use ndarray::{Array2, arr2};
 use ndarray_rand::RandomExt;
 use rand::distributions::Uniform;
 
@@ -29,6 +29,13 @@ fn main() {
     let embed_dim = 3; // 例：各単語は3次元のベクトルで表現される
 
     let query = generate_random_matrix(seq_lne, embed_dim);
+    let query: Matrix = arr2(
+        &[
+            [1.0, 0.0, 0.0],
+            [0.0, 1.0, 0.0],
+            [0.0, 0.0, 1.0]
+        ]
+    );
     let key   = generate_random_matrix(seq_lne, embed_dim);
     let value = generate_random_matrix(seq_lne, embed_dim);
     // Self-Attentionを計算
