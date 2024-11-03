@@ -2,5 +2,6 @@
 members = [
     "playground",
     "decision_tree",
-    "transformer"
+    "transformer",
+    "bays_study"
 ]
