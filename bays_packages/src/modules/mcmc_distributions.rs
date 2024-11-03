@@ -3,15 +3,19 @@ use statrs::distribution::{Continuous, Normal as StatrsNormal};
 // ---------------------------------------------------------------------
 // 事前、事後分布
 // いずれは正規分布だけではなく、別の分布も実装するかもなので分布は以下の形式で管理して、MCMCのコードからその実装を隠蔽する
+#[allow(dead_code)]
 pub trait BaysDistribution {
     fn pdf(&self, x: f64) -> f64;
     fn print(&self);
     fn update_parameters(&mut self, new_parameters: &Vec<f64>);
 }
+
 pub struct BaysNormalDistribution {
     mu: f64,
     sigma: f64,
 }
+
+#[allow(dead_code)]
 impl BaysDistribution for BaysNormalDistribution {
     fn pdf(&self, x: f64) -> f64 {
         let normal = StatrsNormal::new(self.mu, self.sigma).unwrap();
@@ -28,6 +32,7 @@ impl BaysDistribution for BaysNormalDistribution {
     }
 }
 
+#[allow(dead_code)]
 pub fn normal(mu: f64, sigma: f64) -> Box<dyn BaysDistribution>{
     Box::new(
         BaysNormalDistribution{ mu: mu, sigma: sigma }
