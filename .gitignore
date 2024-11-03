@@ -1,0 +1,6 @@
+/target
+/data
+.DS_Store
+*~
+/backups
+Cargo.lock

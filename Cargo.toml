@@ -4,5 +4,6 @@ members = [
     "decision_tree",
     "transformer",
     "bays_study",
-    "bays_packages"
+    "bays_packages",
+    "visualize"
 ]
