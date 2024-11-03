@@ -3,5 +3,6 @@ members = [
     "playground",
     "decision_tree",
     "transformer",
-    "bays_study"
+    "bays_study",
+    "bays_packages"
 ]
