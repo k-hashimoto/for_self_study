@@ -20,8 +20,8 @@ pub fn metropolis_hastings(
     let proposal_scale: f64 = 100.0;
 
     // 分布を取得
-    let mut parameters = vec![current, sigma];
-    let mut current_distribution  = get_distribution("normal", &parameters);
+    let parameters = vec![current, sigma];
+    let current_distribution  = get_distribution("normal", &parameters);
 
     // todo : 引数処理の部分が正規分布と分離できていない
     let mut proposal_distribution = get_distribution("normal", &vec![prior_mu, prior_sigma]);
