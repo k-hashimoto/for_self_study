@@ -52,5 +52,6 @@ pub fn read_csv_to_two_vectors(path: &str) -> Result<(Vec<String>, Vec<f32>), Bo
         }
     }
 
-    Ok((column1, column2))
+    Ok(( column1, column2 ))
+    //    Ok(( Vec::from(column1), Vec::from(column2) ))
 }
