@@ -1,4 +1,4 @@
-use statrs::distribution::{Continuous, Normal as StatrsNormal};
+use statrs::distribution::Normal as StatrsNormal; // Continuous
 use statrs::distribution::ContinuousCDF;
 use crate::modules::utils::*;
 
