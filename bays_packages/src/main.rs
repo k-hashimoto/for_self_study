@@ -4,6 +4,7 @@ use crate::modules::mcmc_tools::*;
 use crate::modules::mcmc::*;
 
 // ---------------------------------------------------------------------
+// stanで処理するときのような処理ではなく、逐次的にデータが入ってくるオンライン処理的な実装
 fn main() {
     println!("[サンプル] ベイズ推定で顧客の平均購入金額を推定する");
     // 目的：顧客の平均購入金額を推定する
@@ -36,12 +37,15 @@ fn main() {
     println!("  薄化インターバル : {}", thinning_interval);
     println!("  バーンイン : {}", burn_in);
 
+    // データ点のループ
+    // 1つのデータ点に対して3チェーンのサンプルを生成してしまっている
     for (i, &data) in observations.iter().enumerate() {
         println!("-------------------------------");
         println!("# Processing observation {}: {}", i + 1, data);
         // 各初期値で独立したチェーンを実行
         let mut all_samples = Vec::new();
 
+        // チェーンのループ
         for &init in init_values.iter() {
             // メトロポリス・ヘイスティングスの実行
             // MCMCの初期値を1つにすると、生成した数値の分散が早期にゼロになってしまう
