@@ -11,6 +11,7 @@ ndarray-rand = "0.14"
 statrs = "0.15.0"
 csv = "1.1"
 plotters = "0.3"
+prettytable = "0.10"
 
 [profile.dev]
 # warnings = "off"

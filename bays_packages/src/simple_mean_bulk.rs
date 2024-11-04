@@ -6,6 +6,7 @@ use crate::modules::mcmc::*;
 
 use plotters::prelude::*;
 use rand_distr::{Distribution, Normal, Uniform};
+use prettytable::{Table, Row, Cell};
 
 // simple_mean_onlineのように逐次的にデータが入ってくるオンライン処理的な実装ではなく、stanで処理するときのようにバルクで処理する実装
 pub fn run() -> Result<(), Box<dyn std::error::Error>> {
@@ -42,8 +43,8 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
     let init_values: Vec<f64> = (0..4).map(|_| uniform_dist.sample(&mut rng)).collect();
     // let init_values = vec![30.0, 50.0, 70.0]; // 初期値の異なる設定
 
-
-    println!("自己相関抑制のためのパラメータ");
+    println!("-------------------------------");
+    println!("# 自己相関抑制のためのパラメータ");
     println!("  薄化インターバル : {}", thinning_interval);
     println!("  バーンイン : {}", burn_in);
 
@@ -64,7 +65,8 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
     let all_samples: Vec<f64> = chains.iter().flat_map(|chain| chain.iter().cloned()).collect();
     // 事後分布の平均を計算
     posterior_mean = mean_normal_dist(&all_samples);
-
+    println!("-------------------------------");
+    println!("# MCMCのチェック");
     // 自己相関の計算と表示（遅延1～5まで）
     for lag in 1..=5 {
         let ac = autocorrelation(&all_samples, lag);
@@ -79,13 +81,42 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
     // 95%信用区間の計算
     // 例：平均日次売上金額が95%の確率で約60.12ドルから82.45ドルの間にある
     let (lower_bound, upper_bound) = credible_interval(&all_samples);
-    println!("   95% Credible Interval: ({:.2}, {:.2})", lower_bound, upper_bound);
 
-    println!("-------------------------------");
-    println!("観測値(顧客の購入金額-ドル) : {:?}", observations);
-    println!("観測値の平均: {:.2}", true_mean);
-    println!("ベイズ推定された事後分布の平均値: {:.2}", posterior_mean);
-    println!("事後分布の平均値 - 単純平均: {:.2}", posterior_mean-mean_normal_dist(&observations));
+    // 推定結果
+    let mut table = Table::new();
+    table.add_row(Row::new(vec![
+        Cell::new("項目"),
+        Cell::new("説明"),
+    ]));
+    table.add_row(Row::new(vec![
+        Cell::new("観測値の平均"),
+        Cell::new(&format!("{:.3}", true_mean)),
+    ]));
+
+    table.add_row(Row::new(vec![
+        Cell::new("推定結果"),
+        Cell::new(&format!("{:.3}", posterior_mean)),
+    ]));
+
+    table.add_row(Row::new(vec![
+        Cell::new("事後分布の平均値 - 単純平均"),
+        Cell::new(&format!("{:.3}", posterior_mean-mean_normal_dist(&observations))),
+    ]));
+    table.add_row(Row::new(vec![
+        Cell::new("95% Credible Interval"),
+        Cell::new(&format!("{:.3} ~ {:.3}", lower_bound, upper_bound)),
+    ]));
+    // テーブルを表示
+    table.printstd();
+
+//    println!("   95% Credible Interval: ({:.2}, {:.2})", lower_bound, upper_bound);
+
+    // println!("-------------------------------");
+    // println!("# 推定結果");
+    // println!("   観測値の例(顧客の購入金額-ドル)  : {:?}", &observations[1..5]);
+    // println!("   観測値の平均: {:.2}", true_mean);
+    // println!("   ベイズ推定された事後分布の平均値: {:.2}", posterior_mean);
+    // println!("   事後分布の平均値 - 単純平均     : {:.2}", posterior_mean-mean_normal_dist(&observations));
 
     // ------------------------------------------------------------------------------------------------
     // トレースプロットを生成してPNGに保存
