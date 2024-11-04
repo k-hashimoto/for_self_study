@@ -65,6 +65,7 @@ pub fn metropolis_hastings_online(
 
 // ---------------------------------------------------------------------
 pub fn metropolis_hastings_bulk(
+    distribution_name: &str,
     iterations: usize,
     burn_in: usize,
     init: f64,
@@ -74,7 +75,8 @@ pub fn metropolis_hastings_bulk(
     prior_sigma: f64,
     proposal_scale: f64
 ) -> Vec<f64> {
-//    metropolis_hastings_online(iterations, burn_in, init, data, sigma, prior_mu, prior_sigma) //dummy
+    // [todo]
+    //  - 事前・事後分布の実装はget_distributionで隠蔽できたので、stringの引数で分布を指定出来るようにする
 
     let mut rng = rand::thread_rng();
     let mut samples = Vec::new();
@@ -83,10 +85,10 @@ pub fn metropolis_hastings_bulk(
 
     // 分布を取得
     let parameters = vec![current, sigma];
-    let current_distribution  = get_distribution("normal", &parameters);
+    let current_distribution  = get_distribution(distribution_name, &parameters);
 
     // todo : 引数処理の部分が正規分布と分離できていない
-    let mut proposal_distribution = get_distribution("normal", &vec![prior_mu, prior_sigma]);
+    let mut proposal_distribution = get_distribution(distribution_name, &vec![prior_mu, prior_sigma]);
 
     // 提案分布としてrand_distrのNormalを使用
     let distribution = Normal::new(0.0, proposal_scale).unwrap();

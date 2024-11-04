@@ -1,4 +1,4 @@
-use statrs::distribution::{Continuous, Normal as StatrsNormal};
+use statrs::distribution::{Continuous, Discrete, Normal as StatrsNormal, Poisson as StatrsPoisson};
 
 // ---------------------------------------------------------------------
 // 事前、事後分布
@@ -32,10 +32,37 @@ impl BaysDistribution for BaysNormalDistribution {
     }
 }
 
+pub struct BaysPoissonDistribution {
+    lambda: f64,
+}
+
+#[allow(dead_code)]
+impl BaysDistribution for BaysPoissonDistribution {
+    fn pdf(&self, x: f64) -> f64 {
+        let poisson = StatrsPoisson::new(self.lambda).unwrap();
+        poisson.pmf(x as u64)
+    }
+
+    fn print(&self) {
+        println!("parameter = {}", self.lambda);
+    }
+
+    fn update_parameters(&mut self, new_parameters: &Vec<f64>) {
+        self.lambda = new_parameters[0];
+    }
+}
+
+
 #[allow(dead_code)]
 pub fn normal(mu: f64, sigma: f64) -> Box<dyn BaysDistribution>{
     Box::new(
         BaysNormalDistribution{ mu: mu, sigma: sigma }
+    )
+}
+
+pub fn poisson(lambda: f64) -> Box<dyn BaysDistribution>{
+    Box::new(
+        BaysPoissonDistribution{ lambda: lambda }
     )
 }
 
@@ -44,8 +71,11 @@ pub fn normal(mu: f64, sigma: f64) -> Box<dyn BaysDistribution>{
 pub fn get_distribution(name: &str, parameters: &Vec<f64>) -> Box<dyn BaysDistribution> {
     if name == "normal" {
         normal(parameters[0], parameters[1])
+    }else if name == "poisson" {
+        poisson(parameters[0])
     } else {
-        normal(parameters[0], parameters[1]) // 暫定的
+        //normal(parameters[0], parameters[1]) //暫定
+        panic!("Unknown distribution!")
     }
 }
 // fn update_parameter_vector(parameters: &mut Vec<f64>, new_values: &[f64]) {
