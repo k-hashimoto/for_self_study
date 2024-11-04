@@ -3,6 +3,8 @@ use crate::modules::utils::*;
 use crate::modules::mcmc_tools::*;
 use crate::modules::mcmc::*;
 
+use rand_distr::{Distribution, Normal, Uniform};
+
 // stanで処理するときのような処理ではなく、逐次的にデータが入ってくるオンライン処理的な実装
 pub fn run() {
     println!("[サンプル] ベイズ推定で顧客の平均購入金額を推定する(逐次処理ver.)");
@@ -16,21 +18,25 @@ pub fn run() {
                             65.0, 46.0, 51.0, 43.0, 43.0, 54.0, 40.0, 53.0, 75.0, 50.0,
                             35.0, 43.0, 53.0, 68.0, 48.0, 46.0, 44.0, 34.0, 48.0, 60.0
                         ];
-
+    let true_mean = mean_normal_dist(&observations);
     // 事前分布：平均1ドル、標準偏差100ドルの正規分布
     let mut prior_mu = 10.0;
     let mut prior_sigma = 100.0;
 
     // ベイズ更新のイテレーション数
     let iterations = 100000; // メトロポリス・ヘイスティングスのサンプル数 100000
-    let sigma = 10.0; // 尤度の標準偏差（観測誤差として仮定）
+    let sigma = 20.0; // 尤度の標準偏差（観測誤差として仮定）
     let mut posterior_mean = 0.;
     // MCMCの自己相関を排除するパラメータ
     let thinning_interval = 300; // 薄化の間隔（例：10サンプルに1つを選択） 1000
     let burn_in = 50000; // バーンイン
 
     // 初期値を異なる3つのチェーンで設定
-    let init_values = vec![30.0, 50.0, 70.0]; // 初期値の異なる設定
+    // 一様分布で初期値を生成
+    let mut rng = rand::thread_rng();
+    let uniform_dist = Uniform::new(true_mean - 10.0, true_mean + 10.0); // 初期値の範囲を20.0～80.0と設定
+    let init_values: Vec<f64> = (0..4).map(|_| uniform_dist.sample(&mut rng)).collect();
+    // let init_values = vec![30.0, 50.0, 70.0]; // 初期値の異なる設定
 
     println!("自己相関抑制のためのパラメータ");
     println!("  薄化インターバル : {}", thinning_interval);
@@ -52,12 +58,12 @@ pub fn run() {
             all_samples.extend(thinned_samples); // 結果を統合
         }
 
-        //all_samplesには全部のチェーンのサンプルが含まれる
+        // all_samplesには全部のチェーンのサンプルが含まれる
+        // よってall_samplesから平均や分散を計算すれば、全部のチェーンの要約結果としての値が得られるはず
 
         // 事後分布の平均を計算
         posterior_mean = mean_normal_dist(&all_samples);
 
-        //
         // 次の更新に備えて事前分布の平均を事後分布の平均に更新
         prior_mu = posterior_mean;
         // 次の更新に備えて事前分布の標準偏差をサンプルの標準偏差に更新
@@ -85,7 +91,7 @@ pub fn run() {
     }
     println!("-------------------------------");
     println!("観測値(顧客の購入金額-ドル) : {:?}", observations);
-    println!("観測値の平均: {:.2}", mean_normal_dist(&observations));
+    println!("観測値の平均: {:.2}", true_mean);
     println!("ベイズ推定された事後分布の平均値: {:.2}", posterior_mean);
     println!("事後分布の平均値 - 単純平均: {:.2}", posterior_mean-mean_normal_dist(&observations));
 }
