@@ -87,6 +87,7 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
     println!("ベイズ推定された事後分布の平均値: {:.2}", posterior_mean);
     println!("事後分布の平均値 - 単純平均: {:.2}", posterior_mean-mean_normal_dist(&observations));
 
+    // ------------------------------------------------------------------------------------------------
     // トレースプロットを生成してPNGに保存
     let root = BitMapBackend::new("./plots/bays_packages/trace_plot.png", (800, 600)).into_drawing_area();
     root.fill(&WHITE)?;
