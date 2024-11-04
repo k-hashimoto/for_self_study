@@ -24,13 +24,13 @@ pub fn metropolis_hastings_online(
     let mut prior_distribution   = get_distribution("normal", &vec![prior_mu, prior_sigma]);
 
     // 提案分布としてrand_distrのNormalを使用
-    let distribution = Normal::new(0.0, proposal_scale).unwrap();
+    let proposal_distribution = Normal::new(0.0, proposal_scale).unwrap();
 
     let mut acceptance_ratios = Vec::new();
 
     for _ in 0..iterations {
         // 提案された新しいサンプルを生成
-        let proposal = current + distribution.sample(&mut rng);
+        let proposal = current + proposal_distribution.sample(&mut rng);
 
         // 尤度計算
         // todo : 引数処理の部分が正規分布と分離できていない
