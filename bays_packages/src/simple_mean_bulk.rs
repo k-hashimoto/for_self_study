@@ -18,7 +18,7 @@ pub fn run() {
                         ];
 
     // 事前分布：平均1ドル、標準偏差100ドルの正規分布
-    let mut prior_mu = 50.0;
+    let mut prior_mu    = 50.0;
     let mut prior_sigma = 10.0;
 
     // ベイズ更新のイテレーション数
