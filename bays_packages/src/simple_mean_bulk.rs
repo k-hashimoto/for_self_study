@@ -22,12 +22,12 @@ pub fn run() {
     let mut prior_sigma = 10.0;
 
     // ベイズ更新のイテレーション数
-    let iterations = 100; // メトロポリス・ヘイスティングスのサンプル数 100000
+    let iterations = 100000; // メトロポリス・ヘイスティングスのサンプル数 100000
     let sigma = 10.0; // 尤度の標準偏差（観測誤差として仮定）
     let mut posterior_mean = 0.;
     // MCMCの自己相関を排除するパラメータ
-    let thinning_interval = 1; // 薄化の間隔（例：10サンプルに1つを選択） 1000
-    let burn_in = 10000; // バーンイン
+    let thinning_interval = 10; // 薄化の間隔（例：10サンプルに1つを選択） 1000
+    let burn_in = 50000; // バーンイン
     let proposal_scale = 5.0;// 提案分布のスケール
     // 初期値を異なる3つのチェーンで設定
     let init_values = vec![30.0, 50.0, 70.0]; // 初期値の異なる設定
