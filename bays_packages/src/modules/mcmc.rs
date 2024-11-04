@@ -81,7 +81,6 @@ pub fn metropolis_hastings_bulk(
     let mut samples = Vec::new();
     let mut init = parameters[0];
     let mut current = init;
-    let sigma = parameters[1];
 
     // 分布を取得
     let current_distribution  = get_distribution(distribution_name, &parameters);
@@ -95,11 +94,22 @@ pub fn metropolis_hastings_bulk(
     for i in 0..iterations {
         // 提案された新しいサンプルを生成
         let proposal = current + distribution.sample(&mut rng);
+        let proposal = if distribution_name == "poisson" {
+            proposal.abs()
+        } else {
+            proposal
+        };
 
         // 尤度計算
         // todo : 引数処理の部分が正規分布と分離できていない。むずい。
-
-        proposal_distribution.update_parameters(&vec![proposal, sigma]);
+        // 分布によってパラメータの数が違う。正規分布なら2つ、ポアソン分布なら1つ
+        // このMHの実装は共役分布が前提で、共役分布は限られていれていてif分岐出来るのでこれで良しよする
+        if distribution_name == "normal" {
+            let sigma = parameters[1];
+            proposal_distribution.update_parameters(&vec![proposal, sigma]);
+        } else if distribution_name == "poisson" {
+            proposal_distribution.update_parameters(&vec![proposal]);
+        }
 
         let current_likelihood:  f64 = data.iter().map( |&x| current_distribution.pdf(x).ln() ).sum();
         let proposal_likelihood: f64 = data.iter().map( |&x| proposal_distribution.pdf(x).ln() ).sum();
