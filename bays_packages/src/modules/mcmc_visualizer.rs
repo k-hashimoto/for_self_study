@@ -1,73 +1,38 @@
 use plotters::prelude::*;
 
-struct mcmc_results {
-    results: Vec<mcmc_result>,
-    chains: Vec<usize>
-}
+pub fn trace_plot(chains: &Vec<Vec<f64>>, x_min: usize, x_max: usize, y_min: f64, y_max: f64) -> Result<(), Box<dyn std::error::Error>> {
+    let root = BitMapBackend::new("./plots/bays_packages/trace_plot.png", (800, 600)).into_drawing_area();
+    root.fill(&WHITE)?;
 
-struct mcmc_result {
-    iter_num: Vec<usize>,
-    generated_samples: Vec<f64>
-}
+    let mut chart = ChartBuilder::on(&root)
+        .caption("Trace Plot of MCMC Samples for 4 Chains(blue:1, red:2, green:3, purple:4)", ("sans-serif", 20))
+        .margin(20)
+        .x_label_area_size(30)
+        .y_label_area_size(40)
+        .build_cartesian_2d(x_min..x_max, y_min..y_max)?;
 
-trait VisualizeSignleResult {
-    fn new(&self);
-    fn store(Vec<usize>: &iter_num, Vec<f64>: &generated_samples);
-}
-impl Visualize for VisualizeSignleResult {
-    fn new(&self) {
-        self.mcmc_results.generated_samples = Vec::new();
-        self.mcmc_results.iter_num = Vec::new();
-    }
-    fn store(Vec<usize>: &iter_num, Vec<f64>: &generated_samples) {
-        self.mcmc_results.generated_samples.push(&generated_samples);
-        self.mcmc_results.iter_num.push(&iter_num);
-    }
-}
+    chart.configure_mesh().draw()?;
 
-pub fn visualizer() {
-    mcmc_results{}
-}
-
-#[allow(dead_code)]
-impl Visualize for mcmc_results {
-    fn new(&self) {
-        self.results.iter().new();
-    }
-    fn store(usize: &iter_num, f64: &generated_sample){
-        self.store(&iter_num, &generated_sample);
+    // チェーンごとに異なる色でトレースプロットを描画
+    // let colors = [full_palette::BLUE, full_palette::RED, full_palette::GREEN, full_palette::PURPLE];
+    // チェーンごとの色を透明度付きで設定
+    let colors = [
+        RGBAColor(0, 0, 255, 0.2),    // 半透明の青
+        RGBAColor(255, 0, 0, 0.2),    // 半透明の赤
+        RGBAColor(0, 255, 0, 0.2),    // 半透明の緑
+        RGBAColor(128, 0, 128, 0.2),  // 半透明の紫
+    ];
+    for (i, chain) in chains.iter().enumerate() {
+        chart.draw_series(
+                LineSeries::new(
+                    chain.iter().enumerate().map(|(j, &value)| (j, value)),
+                    &colors[i],
+                )
+        )?;
     }
 
-    // fn traceplot(){
-    //     // 画像のサイズと出力ファイルを設定
-    //     let root = BitMapBackend::new("./plots/bays_packages/traceplot.png", (640, 480)).into_drawing_area();
-    //     root.fill(&WHITE)?;
-
-    //     // グラフエリアの設定
-    //     let mut chart = ChartBuilder::on(&root)
-    //         .caption("MCMC traceplit", ("sans-serif", 50).into_font())
-    //         .margin(20)
-    //         .x_label_area_size(30)
-    //         .y_label_area_size(30)
-    //         .build_cartesian_2d(0..6, 0..60)?;
-
-    //     chart.configure_mesh().draw()?;
-
-    //     // 1つ目のデータ系列をプロット
-    //     chart.draw_series(LineSeries::new(
-    //         x.iter().zip(y1.iter()).map(|(&x, &y)| (self., y)),
-    //         &BLUE,
-    //     ))?
-    //     .label("Series 1")
-    //     .legend(|(x, y)| PathElement::new([(x, y), (x + 20, y)], &BLUE));
-
-    //     // 2つ目のデータ系列をプロット
-    //     chart.draw_series(LineSeries::new(
-    //         x.iter().zip(y2.iter()).map(|(&x, &y)| (x, y)),
-    //         &RED,
-    //     ))?
-    //     .label("Series 2")
-    //     .legend(|(x, y)| PathElement::new([(x, y), (x + 20, y)], &RED));
-
-    // }
+    // 保存処理の完了
+    root.present()?;
+    println!("Trace plot saved as 'plots/bays_packages/trace_plot.png'");
+    Ok(())
 }

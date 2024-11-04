@@ -2,11 +2,11 @@
 use crate::modules::utils::*;
 use crate::modules::mcmc_tools::*;
 use crate::modules::mcmc::*;
-// use crate::modules::mcmc_visualizer::*
+use crate::modules::mcmc_visualizer::*;
 
-use plotters::prelude::*;
 use rand_distr::{Distribution, Normal, Uniform};
 use prettytable::{Table, Row, Cell};
+
 
 // simple_mean_onlineのように逐次的にデータが入ってくるオンライン処理的な実装ではなく、stanで処理するときのようにバルクで処理する実装
 pub fn run() -> Result<(), Box<dyn std::error::Error>> {
@@ -82,6 +82,7 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
     // 例：平均日次売上金額が95%の確率で約60.12ドルから82.45ドルの間にある
     let (lower_bound, upper_bound) = credible_interval(&all_samples);
 
+    println!("-------------------------------");
     // 推定結果
     let mut table = Table::new();
     table.add_row(Row::new(vec![
@@ -109,7 +110,7 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
     // テーブルを表示
     table.printstd();
 
-//    println!("   95% Credible Interval: ({:.2}, {:.2})", lower_bound, upper_bound);
+    //    println!("   95% Credible Interval: ({:.2}, {:.2})", lower_bound, upper_bound);
 
     // println!("-------------------------------");
     // println!("# 推定結果");
@@ -120,38 +121,6 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
 
     // ------------------------------------------------------------------------------------------------
     // トレースプロットを生成してPNGに保存
-    let root = BitMapBackend::new("./plots/bays_packages/trace_plot.png", (800, 600)).into_drawing_area();
-    root.fill(&WHITE)?;
-
-    let mut chart = ChartBuilder::on(&root)
-        .caption("Trace Plot of MCMC Samples for 4 Chains(blue:1, red:2, green:3, purple:4)", ("sans-serif", 20))
-        .margin(20)
-        .x_label_area_size(30)
-        .y_label_area_size(40)
-        .build_cartesian_2d(0..((&iterations - &burn_in) / 10), 35.0..65.0)?;
-
-    chart.configure_mesh().draw()?;
-
-    // チェーンごとに異なる色でトレースプロットを描画
-    // let colors = [full_palette::BLUE, full_palette::RED, full_palette::GREEN, full_palette::PURPLE];
-    // チェーンごとの色を透明度付きで設定
-    let colors = [
-        RGBAColor(0, 0, 255, 0.2),    // 半透明の青
-        RGBAColor(255, 0, 0, 0.2),    // 半透明の赤
-        RGBAColor(0, 255, 0, 0.2),    // 半透明の緑
-        RGBAColor(128, 0, 128, 0.2),  // 半透明の紫
-    ];
-    for (i, chain) in chains.iter().enumerate() {
-        chart.draw_series(
-                LineSeries::new(
-                    chain.iter().enumerate().map(|(j, &value)| (j, value)),
-                    &colors[i],
-                )
-        )?;
-    }
-
-    // 保存処理の完了
-    root.present()?;
-    println!("Trace plot saved as 'plots/bays_packages/trace_plot.png'");
+    trace_plot(&chains, 0, (iterations - burn_in) / 10, 35.0, 65.0);
     Ok(())
 }
