@@ -54,6 +54,7 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
 
     for &init in init_values.iter() {
         let parameters = vec![init, sigma];
+        let prior_parameters = vec![prior_mu, prior_sigma];
         // メトロポリス・ヘイスティングスの実行
         // MCMCの初期値を1つにすると、生成した数値の分散が早期にゼロになってしまう
         let samples = metropolis_hastings_bulk(
@@ -62,8 +63,7 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
                 burn_in,
                 &observations,
                 parameters,
-                prior_mu,
-                prior_sigma,
+                prior_parameters,
                 proposal_scale
         );
         // サンプルの薄化（間引き）
