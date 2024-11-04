@@ -1,6 +1,7 @@
 mod modules;
 mod simple_mean_online;
 mod simple_mean_bulk;
+mod simple_poisson;
 
 use std::env;
 
@@ -17,6 +18,8 @@ fn main() {
         simple_mean_online::run();
     } else if args[1] == "--simple_mean_bulk" {
         simple_mean_bulk::run();
+    } else if args[1] == "--simple_poisson" {
+        simple_poisson::run();
     } else {
         panic!("有効な引数ではありません!");
     }

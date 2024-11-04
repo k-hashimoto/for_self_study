@@ -53,7 +53,7 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
     for &init in init_values.iter() {
         // メトロポリス・ヘイスティングスの実行
         // MCMCの初期値を1つにすると、生成した数値の分散が早期にゼロになってしまう
-        let samples = metropolis_hastings_bulk("normal", iterations, burn_in, init, &observations, sigma, prior_mu, prior_sigma, proposal_scale);
+        let samples = metropolis_hastings_bulk("poisson", iterations, burn_in, init, &observations, sigma, prior_mu, prior_sigma, proposal_scale);
         // サンプルの薄化（間引き）
         //let thinned_samples = thin_samples(&samples, thinning_interval);
         chains.push(thin_samples(&samples, thinning_interval)); // 結果を統合

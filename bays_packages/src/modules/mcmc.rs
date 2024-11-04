@@ -77,6 +77,7 @@ pub fn metropolis_hastings_bulk(
 ) -> Vec<f64> {
     // [todo]
     //  - 事前・事後分布の実装はget_distributionで隠蔽できたので、stringの引数で分布を指定出来るようにする
+    //  - この関数の引数は正規分布前提なのでこれも隠蔽する
 
     let mut rng = rand::thread_rng();
     let mut samples = Vec::new();
