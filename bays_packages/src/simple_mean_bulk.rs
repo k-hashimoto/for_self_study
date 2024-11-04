@@ -5,7 +5,6 @@ use crate::modules::mcmc::*;
 use crate::modules::mcmc_visualizer::*;
 
 use rand_distr::{Distribution, Normal, Uniform};
-use prettytable::{Table, Row, Cell};
 
 
 // simple_mean_onlineのように逐次的にデータが入ってくるオンライン処理的な実装ではなく、stanで処理するときのようにバルクで処理する実装
@@ -84,43 +83,10 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
 
     println!("-------------------------------");
     // 推定結果
-    let mut table = Table::new();
-    table.add_row(Row::new(vec![
-        Cell::new("項目"),
-        Cell::new("説明"),
-    ]));
-    table.add_row(Row::new(vec![
-        Cell::new("観測値の平均"),
-        Cell::new(&format!("{:.3}", true_mean)),
-    ]));
+    print_mcmc_summary_table(&true_mean, &posterior_mean, &lower_bound, &upper_bound);
 
-    table.add_row(Row::new(vec![
-        Cell::new("推定結果"),
-        Cell::new(&format!("{:.3}", posterior_mean)),
-    ]));
-
-    table.add_row(Row::new(vec![
-        Cell::new("事後分布の平均値 - 単純平均"),
-        Cell::new(&format!("{:.3}", posterior_mean-mean_normal_dist(&observations))),
-    ]));
-    table.add_row(Row::new(vec![
-        Cell::new("95% Credible Interval"),
-        Cell::new(&format!("{:.3} ~ {:.3}", lower_bound, upper_bound)),
-    ]));
-    // テーブルを表示
-    table.printstd();
-
-    //    println!("   95% Credible Interval: ({:.2}, {:.2})", lower_bound, upper_bound);
-
-    // println!("-------------------------------");
-    // println!("# 推定結果");
-    // println!("   観測値の例(顧客の購入金額-ドル)  : {:?}", &observations[1..5]);
-    // println!("   観測値の平均: {:.2}", true_mean);
-    // println!("   ベイズ推定された事後分布の平均値: {:.2}", posterior_mean);
-    // println!("   事後分布の平均値 - 単純平均     : {:.2}", posterior_mean-mean_normal_dist(&observations));
-
-    // ------------------------------------------------------------------------------------------------
     // トレースプロットを生成してPNGに保存
     trace_plot(&chains, 0, (iterations - burn_in) / 10, 35.0, 65.0);
+
     Ok(())
 }

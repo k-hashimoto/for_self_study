@@ -1,4 +1,5 @@
 use plotters::prelude::*;
+use prettytable::{Table, Row, Cell};
 
 pub fn trace_plot(chains: &Vec<Vec<f64>>, x_min: usize, x_max: usize, y_min: f64, y_max: f64) -> Result<(), Box<dyn std::error::Error>> {
     let root = BitMapBackend::new("./plots/bays_packages/trace_plot.png", (800, 600)).into_drawing_area();
@@ -35,4 +36,32 @@ pub fn trace_plot(chains: &Vec<Vec<f64>>, x_min: usize, x_max: usize, y_min: f64
     root.present()?;
     println!("Trace plot saved as 'plots/bays_packages/trace_plot.png'");
     Ok(())
+}
+
+pub fn print_mcmc_summary_table(true_mean: &f64, posterior_mean: &f64, lower_bound: &f64, upper_bound: &f64){
+    let mut table = Table::new();
+    table.add_row(Row::new(vec![
+        Cell::new("項目"),
+        Cell::new("説明"),
+    ]));
+    table.add_row(Row::new(vec![
+        Cell::new("観測値の平均"),
+        Cell::new(&format!("{:.3}", true_mean)),
+    ]));
+
+    table.add_row(Row::new(vec![
+        Cell::new("推定結果"),
+        Cell::new(&format!("{:.3}", posterior_mean)),
+    ]));
+
+    table.add_row(Row::new(vec![
+        Cell::new("事後分布の平均値 - 単純平均"),
+        Cell::new(&format!("{:.3}", posterior_mean - true_mean)),
+    ]));
+    table.add_row(Row::new(vec![
+        Cell::new("95% Credible Interval"),
+        Cell::new(&format!("{:.3} ~ {:.3}", lower_bound, upper_bound)),
+    ]));
+    // テーブルを表示
+    table.printstd();
 }
