@@ -68,9 +68,8 @@ pub fn metropolis_hastings_bulk(
     distribution_name: &str,
     iterations: usize,
     burn_in: usize,
-    init: f64,
     data: &[f64],
-    sigma: f64,
+    parameters: Vec<f64>,
     prior_mu: f64,
     prior_sigma: f64,
     proposal_scale: f64
@@ -81,11 +80,14 @@ pub fn metropolis_hastings_bulk(
 
     let mut rng = rand::thread_rng();
     let mut samples = Vec::new();
+    let mut init = parameters[0];
     let mut current = init;
+    let sigma = parameters[1];
     //    let proposal_scale: f64 = 100.0;
 
     // 分布を取得
-    let parameters = vec![current, sigma];
+    // let parameters = vec![current, sigma];
+
     let current_distribution  = get_distribution(distribution_name, &parameters);
 
     // todo : 引数処理の部分が正規分布と分離できていない
