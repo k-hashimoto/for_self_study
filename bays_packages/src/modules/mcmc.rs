@@ -84,11 +84,7 @@ pub fn metropolis_hastings_bulk(
     let sigma = parameters[1];
 
     // 分布を取得
-    // let parameters = vec![current, sigma];
-
     let current_distribution  = get_distribution(distribution_name, &parameters);
-
-    // todo : 引数処理の部分が正規分布と分離できていない
     let mut proposal_distribution = get_distribution(distribution_name, &prior_parameters);
 
     // 提案分布としてrand_distrのNormalを使用
@@ -101,7 +97,8 @@ pub fn metropolis_hastings_bulk(
         let proposal = current + distribution.sample(&mut rng);
 
         // 尤度計算
-         // todo : 引数処理の部分が正規分布と分離できていない
+        // todo : 引数処理の部分が正規分布と分離できていない。むずい。
+
         proposal_distribution.update_parameters(&vec![proposal, sigma]);
 
         let current_likelihood:  f64 = data.iter().map( |&x| current_distribution.pdf(x).ln() ).sum();
