@@ -4,7 +4,7 @@ members = [
     "playground",
     "decision_tree",
     "transformer",
-    "bays_study",
-    "bays_packages",
+    "bayes_study",
+    "bayes_packages",
     "visualize"
 ]
