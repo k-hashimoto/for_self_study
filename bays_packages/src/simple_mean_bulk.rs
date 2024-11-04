@@ -18,17 +18,17 @@ pub fn run() {
                         ];
 
     // 事前分布：平均1ドル、標準偏差100ドルの正規分布
-    let mut prior_mu = 10.0;
-    let mut prior_sigma = 100.0;
+    let mut prior_mu = 50.0;
+    let mut prior_sigma = 10.0;
 
     // ベイズ更新のイテレーション数
-    let iterations = 100000; // メトロポリス・ヘイスティングスのサンプル数 100000
+    let iterations = 100; // メトロポリス・ヘイスティングスのサンプル数 100000
     let sigma = 10.0; // 尤度の標準偏差（観測誤差として仮定）
     let mut posterior_mean = 0.;
     // MCMCの自己相関を排除するパラメータ
-    let thinning_interval = 200; // 薄化の間隔（例：10サンプルに1つを選択） 1000
+    let thinning_interval = 1; // 薄化の間隔（例：10サンプルに1つを選択） 1000
     let burn_in = 10000; // バーンイン
-
+    let proposal_scale = 5.0;// 提案分布のスケール
     // 初期値を異なる3つのチェーンで設定
     let init_values = vec![30.0, 50.0, 70.0]; // 初期値の異なる設定
 
@@ -36,54 +36,38 @@ pub fn run() {
     println!("  薄化インターバル : {}", thinning_interval);
     println!("  バーンイン : {}", burn_in);
 
-    // データ点のループ
-    // 1つのデータ点に対して3チェーンのサンプルを生成してしまっている
-    for (i, &data) in observations.iter().enumerate() {
-        println!("-------------------------------");
-        println!("# Processing observation {}: {}", i + 1, data);
-        // 各初期値で独立したチェーンを実行
-        let mut all_samples = Vec::new();
+    // 各初期値で独立したチェーンを実行
+    let mut all_samples = Vec::new();
 
-        // チェーンのループ
-        for &init in init_values.iter() {
-            // メトロポリス・ヘイスティングスの実行
-            // MCMCの初期値を1つにすると、生成した数値の分散が早期にゼロになってしまう
-            let samples = metropolis_hastings_bulk(iterations, burn_in, init, data, sigma, prior_mu, prior_sigma);
-            all_samples.extend(samples); // 結果を統合
-        }
-
-        // サンプルの薄化（間引き）
-        let thinned_samples = thin_samples(&all_samples, thinning_interval);
-
-        // 事後分布の平均を計算
-        posterior_mean = mean_normal_dist(&thinned_samples);
-
-        //
-        // 次の更新に備えて事前分布の平均を事後分布の平均に更新
-        prior_mu = posterior_mean;
-        // 次の更新に備えて事前分布の標準偏差をサンプルの標準偏差に更新
-        prior_sigma = stddev_normal_dist(&thinned_samples);
-
-        println!(
-            "Updated posterior mean after observing {}: {:.2} +- {:.4}",
-            data, posterior_mean, prior_sigma
-        );
-        // 自己相関の計算と表示（遅延1～5まで）
-        for lag in 1..=5 {
-            let ac = autocorrelation(&thinned_samples, lag);
-            println!("   Autocorrelation at lag {}: {:.4}", lag, ac);
-        }
-
-        let if_value = inefficiency_factor_diagnostic(&thinned_samples, 5);
-        // Geweke診断
-        println!("   Geweke p-value = {:.4}", geweke_diagnostic_p_value(&thinned_samples, 0.2, 0.5));
-        // IF
-        println!("   IF-value       = {:.2}({}個/{}の独立したサンプル)", if_value, iterations / if_value as usize, iterations);
-        // 95%信用区間の計算
-        // 例：平均日次売上金額が95%の確率で約60.12ドルから82.45ドルの間にある
-        let (lower_bound, upper_bound) = credible_interval(&thinned_samples);
-        println!("   95% Credible Interval: ({:.2}, {:.2})", lower_bound, upper_bound);
+    // チェーンのループ
+    for &init in init_values.iter() {
+        // メトロポリス・ヘイスティングスの実行
+        // MCMCの初期値を1つにすると、生成した数値の分散が早期にゼロになってしまう
+        let samples = metropolis_hastings_bulk(iterations, burn_in, init, &observations, sigma, prior_mu, prior_sigma, proposal_scale);
+            // サンプルの薄化（間引き）
+        let thinned_samples = thin_samples(&samples, thinning_interval);
+        all_samples.extend(thinned_samples); // 結果を統合
     }
+
+    // 事後分布の平均を計算
+    posterior_mean = mean_normal_dist(&all_samples);
+
+    // 自己相関の計算と表示（遅延1～5まで）
+    for lag in 1..=5 {
+        let ac = autocorrelation(&all_samples, lag);
+        println!("   Autocorrelation at lag {}: {:.4}", lag, ac);
+    }
+
+    let if_value = inefficiency_factor_diagnostic(&all_samples, 5);
+    // Geweke診断
+    println!("   Geweke p-value = {:.4}", geweke_diagnostic_p_value(&all_samples, 0.2, 0.5));
+    // IF
+    println!("   IF-value       = {:.2}({}個/{}の独立したサンプル)", if_value, iterations / if_value as usize, iterations);
+    // 95%信用区間の計算
+    // 例：平均日次売上金額が95%の確率で約60.12ドルから82.45ドルの間にある
+    let (lower_bound, upper_bound) = credible_interval(&all_samples);
+    println!("   95% Credible Interval: ({:.2}, {:.2})", lower_bound, upper_bound);
+
     println!("-------------------------------");
     println!("観測値(顧客の購入金額-ドル) : {:?}", observations);
     println!("観測値の平均: {:.2}", mean_normal_dist(&observations));

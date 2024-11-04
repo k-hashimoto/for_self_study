@@ -68,61 +68,64 @@ pub fn metropolis_hastings_bulk(
     iterations: usize,
     burn_in: usize,
     init: f64,
-    data: f64,
+    data: &[f64],
     sigma: f64,
     prior_mu: f64,
     prior_sigma: f64,
+    proposal_scale: f64
 ) -> Vec<f64> {
-    metropolis_hastings_online(iterations, burn_in, init, data, sigma, prior_mu, prior_sigma) //dummy
-    // let mut rng = rand::thread_rng();
-    // let mut samples = Vec::new();
-    // let mut current = init;
-    // let proposal_scale: f64 = 100.0;
+//    metropolis_hastings_online(iterations, burn_in, init, data, sigma, prior_mu, prior_sigma) //dummy
 
-    // // 分布を取得
-    // let parameters = vec![current, sigma];
-    // let current_distribution  = get_distribution("normal", &parameters);
+    let mut rng = rand::thread_rng();
+    let mut samples = Vec::new();
+    let mut current = init;
+    //    let proposal_scale: f64 = 100.0;
 
-    // // todo : 引数処理の部分が正規分布と分離できていない
-    // let mut proposal_distribution = get_distribution("normal", &vec![prior_mu, prior_sigma]);
+    // 分布を取得
+    let parameters = vec![current, sigma];
+    let current_distribution  = get_distribution("normal", &parameters);
 
-    // // 提案分布としてrand_distrのNormalを使用
-    // let distribution = Normal::new(0.0, proposal_scale).unwrap();
+    // todo : 引数処理の部分が正規分布と分離できていない
+    let mut proposal_distribution = get_distribution("normal", &vec![prior_mu, prior_sigma]);
 
-    // let mut acceptance_ratios = Vec::new();
+    // 提案分布としてrand_distrのNormalを使用
+    let distribution = Normal::new(0.0, proposal_scale).unwrap();
 
-    // for _ in 0..iterations {
-    //     // 提案された新しいサンプルを生成
-    //     let proposal = current + distribution.sample(&mut rng);
+    let mut acceptance_ratios = Vec::new();
 
-    //     // 尤度計算
-    //      // todo : 引数処理の部分が正規分布と分離できていない
-    //     proposal_distribution.update_parameters(&vec![proposal, sigma]);
+    for i in 0..iterations {
+        // 提案された新しいサンプルを生成
+        let proposal = current + distribution.sample(&mut rng);
 
-    //     let current_likelihood  = data.iter().map(|&x| current_distribution.pdf(x)).product();;
-    //     let proposal_likelihood  = data.iter().map(|&x| proposal_distribution.pdf(x)).product();;
+        // 尤度計算
+         // todo : 引数処理の部分が正規分布と分離できていない
+        proposal_distribution.update_parameters(&vec![proposal, sigma]);
 
-    //     // 事前分布の計算
-    //     let current_prior  = current_distribution.pdf(data);
-    //     let proposal_prior = proposal_distribution.pdf(proposal);
+        let current_likelihood:  f64 = data.iter().map( |&x| current_distribution.pdf(x).ln() ).sum();
+        let proposal_likelihood: f64 = data.iter().map( |&x| proposal_distribution.pdf(x).ln() ).sum();
 
-    //     // 事後分布の計算
-    //     let current_posterior  = current_likelihood * current_prior;
-    //     let proposal_posterior = proposal_likelihood * proposal_prior;
+        // 事前分布の計算(対数空間)
+        let current_prior  = current_distribution.pdf(current).ln();
+        let proposal_prior = proposal_distribution.pdf(proposal).ln();
 
-    //     let acceptance_ratio = (proposal_posterior / current_posterior).min(1.0);
+        // 事後分布の計算(対数空間)
+        let current_posterior  = current_likelihood + current_prior;
+        let proposal_posterior = proposal_likelihood + proposal_prior;
 
-    //     if rng.gen::<f64>() < acceptance_ratio {
-    //         current = proposal;
-    //     }
-    //     acceptance_ratios.push(acceptance_ratio);
-    //     samples.push(current);
-    // }
-    // //    println!("MCMC acceptance_ratio : {:.4} +- {:.4}", mean_normal_dist(&acceptance_ratios), stddev_normal_dist(&acceptance_ratios));
-    // //バーンイン
-    // if samples.len() > burn_in {
-    //     samples.split_off(burn_in)
-    // } else {
-    //     samples
-    // }
+        let acceptance_ratio = (proposal_posterior - current_posterior).exp().min(1.0);
+
+        if rng.gen::<f64>() < acceptance_ratio {
+            current = proposal;
+        }
+
+        acceptance_ratios.push(acceptance_ratio);
+        samples.push(current);
+    }
+    //    println!("MCMC acceptance_ratio : {:.4} +- {:.4}", mean_normal_dist(&acceptance_ratios), stddev_normal_dist(&acceptance_ratios));
+    //バーンイン
+    if samples.len() > burn_in {
+        samples.split_off(burn_in)
+    } else {
+        samples
+    }
 }
