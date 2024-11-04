@@ -48,7 +48,7 @@ pub fn run() {
         for &init in init_values.iter() {
             // メトロポリス・ヘイスティングスの実行
             // MCMCの初期値を1つにすると、生成した数値の分散が早期にゼロになってしまう
-            let samples = metropolis_hastings(iterations, burn_in, init, data, sigma, prior_mu, prior_sigma);
+            let samples = metropolis_hastings_bulk(iterations, burn_in, init, data, sigma, prior_mu, prior_sigma);
             all_samples.extend(samples); // 結果を統合
         }
 
