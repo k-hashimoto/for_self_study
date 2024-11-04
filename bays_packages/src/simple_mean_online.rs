@@ -26,11 +26,11 @@ pub fn run() {
     let sigma = 10.0; // 尤度の標準偏差（観測誤差として仮定）
     let mut posterior_mean = 0.;
     // MCMCの自己相関を排除するパラメータ
-    let thinning_interval = 100; // 薄化の間隔（例：10サンプルに1つを選択） 1000
+    let thinning_interval = 300; // 薄化の間隔（例：10サンプルに1つを選択） 1000
     let burn_in = 50000; // バーンイン
 
     // 初期値を異なる3つのチェーンで設定
-    let init_values = vec![30.0]; // 初期値の異なる設定
+    let init_values = 30.0; // 初期値の異なる設定
 
     println!("自己相関抑制のためのパラメータ");
     println!("  薄化インターバル : {}", thinning_interval);
@@ -41,18 +41,13 @@ pub fn run() {
         println!("-------------------------------");
         println!("# Processing observation {}: {}", i + 1, data);
         // 各初期値で独立したチェーンを実行
-        let mut all_samples = Vec::new();
+        //        let mut all_samples = Vec::new();
 
-        // チェーンのループ
-        for &init in init_values.iter() {
-            // メトロポリス・ヘイスティングスの実行
-            // MCMCの初期値を1つにすると、生成した数値の分散が早期にゼロになってしまう
-            let samples = metropolis_hastings_online(iterations, burn_in, init, data, sigma, prior_mu, prior_sigma);
-            all_samples.extend(samples); // 結果を統合
-        }
+        // メトロポリス・ヘイスティングスの実行
+        let samples = metropolis_hastings_online(iterations, burn_in, init_values, data, sigma, prior_mu, prior_sigma);
 
         // サンプルの薄化（間引き）
-        let thinned_samples = thin_samples(&all_samples, thinning_interval);
+        let thinned_samples = thin_samples(&samples, thinning_interval);
 
         // 事後分布の平均を計算
         posterior_mean = mean_normal_dist(&thinned_samples);
