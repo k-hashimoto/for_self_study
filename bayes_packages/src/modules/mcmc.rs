@@ -91,7 +91,7 @@ pub fn metropolis_hastings_bulk(
 
     let mut acceptance_ratios = Vec::new();
 
-    for i in 0..iterations {
+    for _ in 0..iterations {
         // 提案された新しいサンプルを生成
         let proposal = current + distribution.sample(&mut rng);
         let proposal = if distribution_name == "poisson" {

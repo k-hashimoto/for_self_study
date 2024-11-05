@@ -1,4 +1,3 @@
-//use modules::utils::*;
 use crate::modules::mcmc::*;
 use crate::modules::mcmc_tools::*;
 use crate::modules::mcmc_visualizer::*;
@@ -21,13 +20,14 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
 
     let true_mean = mean_normal_dist(&observations);
     // 事前分布：平均1ドル、標準偏差100ドルの正規分布
-    let mut prior_mu = 50.0;
-    let mut prior_sigma = 10.0;
+    let prior_mu = 50.0;
+    let prior_sigma = 10.0;
 
     // ベイズ更新のイテレーション数
     let iterations = 100000; // メトロポリス・ヘイスティングスのサンプル数 100000
     let sigma = 10.0; // 尤度の標準偏差（観測誤差として仮定）
-    let mut posterior_mean = 0.;
+
+    // let mut posterior_mean = 0.;
     // MCMCの自己相関を排除するパラメータ
     let thinning_interval = 10; // 薄化の間隔（例：10サンプルに1つを選択） 1000
     let burn_in = 50000; // バーンイン
@@ -74,7 +74,7 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
         .flat_map(|chain| chain.iter().cloned())
         .collect();
     // 事後分布の平均を計算
-    posterior_mean = mean_normal_dist(&all_samples);
+    let posterior_mean = mean_normal_dist(&all_samples);
     println!("-------------------------------");
     println!("# MCMCのチェック");
     // 自己相関の計算と表示（遅延1～5まで）
@@ -105,7 +105,5 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
     print_mcmc_summary_table(&true_mean, &posterior_mean, &lower_bound, &upper_bound);
 
     // トレースプロットを生成してPNGに保存
-    trace_plot(&chains, 0, (iterations - burn_in) / 10, 35.0, 65.0);
-
-    Ok(())
+    trace_plot(&chains, 0, (iterations - burn_in) / 10, 35.0, 65.0)
 }

@@ -6,7 +6,7 @@ mod simple_poisson;
 use std::env;
 
 // ---------------------------------------------------------------------
-fn main() {
+fn main() -> Result<(), Box<dyn std::error::Error>> {
     let args: Vec<String> = env::args().collect();
     // 実行ファイル名を除いて、2つの引数が必要
     if args.len() < 2 {
@@ -16,11 +16,11 @@ fn main() {
 
     if args[1] == "--simple_mean_online" {
         //cargo runを使う前提。cargo run -p bays_packages -- --simple_mean_online
-        simple_mean_online::run();
+        simple_mean_online::run()
     } else if args[1] == "--simple_mean_bulk" {
-        simple_mean_bulk::run();
+        simple_mean_bulk::run()
     } else if args[1] == "--simple_poisson" {
-        simple_poisson::run();
+        simple_poisson::run()
     } else {
         panic!("有効な引数ではありません!");
     }
