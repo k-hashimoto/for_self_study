@@ -6,7 +6,7 @@ use crate::modules::utils::*;
 use rand_distr::{Distribution, Uniform};
 
 // stanで処理するときのような処理ではなく、逐次的にデータが入ってくるオンライン処理的な実装
-pub fn run() {
+pub fn run() -> Result<(), Box<dyn std::error::Error>> {
     println!("[サンプル] ベイズ推定で顧客の平均購入金額を推定する(逐次処理ver.)");
 
     // 目的：顧客の平均購入金額を推定する
@@ -119,4 +119,5 @@ pub fn run() {
         "事後分布の平均値 - 単純平均: {:.2}",
         posterior_mean - mean_normal_dist(&observations)
     );
+    Ok(())
 }

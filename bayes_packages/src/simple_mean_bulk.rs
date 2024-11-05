@@ -105,5 +105,12 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
     print_mcmc_summary_table(&true_mean, &posterior_mean, &lower_bound, &upper_bound);
 
     // トレースプロットを生成してPNGに保存
-    trace_plot(&chains, 0, (iterations - burn_in) / 10, 35.0, 65.0)
+    trace_plot(&chains, 0, (iterations - burn_in) / 10, 35.0, 65.0);
+
+    plot_mu1_kde_and_data_mean(
+        &chains[0],
+        &observations,
+        "./plots/bayes_packages/distribution.png",
+        1.0,
+    )
 }
