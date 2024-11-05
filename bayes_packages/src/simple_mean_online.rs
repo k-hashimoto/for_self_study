@@ -1,9 +1,9 @@
 //use modules::utils::*;
-use crate::modules::utils::*;
-use crate::modules::mcmc_tools::*;
 use crate::modules::mcmc::*;
+use crate::modules::mcmc_tools::*;
+use crate::modules::utils::*;
 
-use rand_distr::{Distribution, Normal, Uniform};
+use rand_distr::{Distribution, Uniform};
 
 // stanで処理するときのような処理ではなく、逐次的にデータが入ってくるオンライン処理的な実装
 pub fn run() {
@@ -13,11 +13,10 @@ pub fn run() {
     // ｎ回の観測データ（顧客の購入金額-ドルスプシで乱数から生成した値
     // =ARRAYFORMULA(NORMINV(RANDARRAY(20),D$11,D$12))
     let observations = vec![
-                            41.0, 47.0, 57.0, 66.0, 49.0, 28.0, 47.0, 58.0, 54.0, 51.0,
-                            51.0, 45.0, 44.0, 56.0, 61.0, 60.0, 51.0, 48.0, 57.0, 48.0,
-                            65.0, 46.0, 51.0, 43.0, 43.0, 54.0, 40.0, 53.0, 75.0, 50.0,
-                            35.0, 43.0, 53.0, 68.0, 48.0, 46.0, 44.0, 34.0, 48.0, 60.0
-                        ];
+        41.0, 47.0, 57.0, 66.0, 49.0, 28.0, 47.0, 58.0, 54.0, 51.0, 51.0, 45.0, 44.0, 56.0, 61.0,
+        60.0, 51.0, 48.0, 57.0, 48.0, 65.0, 46.0, 51.0, 43.0, 43.0, 54.0, 40.0, 53.0, 75.0, 50.0,
+        35.0, 43.0, 53.0, 68.0, 48.0, 46.0, 44.0, 34.0, 48.0, 60.0,
+    ];
     let true_mean = mean_normal_dist(&observations);
     // 事前分布：平均1ドル、標準偏差100ドルの正規分布
     let mut prior_mu = 10.0;
@@ -45,13 +44,25 @@ pub fn run() {
     // 1つのデータ点に対して3チェーンのサンプルを生成してしまっている
     for (i, &data) in observations.iter().enumerate() {
         println!("-------------------------------");
-        println!("# Processing observation {} / {}", i + 1, observations.len());
+        println!(
+            "# Processing observation {} / {}",
+            i + 1,
+            observations.len()
+        );
 
         // 各初期値で独立したチェーンを実行
         let mut all_samples = Vec::new();
         for &init in init_values.iter() {
             // メトロポリス・ヘイスティングスの実行
-            let samples = metropolis_hastings_online(iterations, burn_in, init, data, sigma, prior_mu, prior_sigma);
+            let samples = metropolis_hastings_online(
+                iterations,
+                burn_in,
+                init,
+                data,
+                sigma,
+                prior_mu,
+                prior_sigma,
+            );
 
             // サンプルの薄化（間引き）
             let thinned_samples = thin_samples(&samples, thinning_interval);
@@ -81,17 +92,31 @@ pub fn run() {
 
         let if_value = inefficiency_factor_diagnostic(&all_samples, 5);
         // Geweke診断
-        println!("   Geweke p-value = {:.4}", geweke_diagnostic_p_value(&all_samples, 0.2, 0.5));
+        println!(
+            "   Geweke p-value = {:.4}",
+            geweke_diagnostic_p_value(&all_samples, 0.2, 0.5)
+        );
         // IF
-        println!("   IF-value       = {:.2}({}個/{}の独立したサンプル)", if_value, iterations / if_value as usize, iterations);
+        println!(
+            "   IF-value       = {:.2}({}個/{}の独立したサンプル)",
+            if_value,
+            iterations / if_value as usize,
+            iterations
+        );
         // 95%信用区間の計算
         // 例：平均日次売上金額が95%の確率で約60.12ドルから82.45ドルの間にある
         let (lower_bound, upper_bound) = credible_interval(&all_samples);
-        println!("   95% Credible Interval: ({:.2}, {:.2})", lower_bound, upper_bound);
+        println!(
+            "   95% Credible Interval: ({:.2}, {:.2})",
+            lower_bound, upper_bound
+        );
     }
     println!("-------------------------------");
     println!("観測値(顧客の購入金額-ドル) : {:?}", observations);
     println!("観測値の平均: {:.2}", true_mean);
     println!("ベイズ推定された事後分布の平均値: {:.2}", posterior_mean);
-    println!("事後分布の平均値 - 単純平均: {:.2}", posterior_mean-mean_normal_dist(&observations));
+    println!(
+        "事後分布の平均値 - 単純平均: {:.2}",
+        posterior_mean - mean_normal_dist(&observations)
+    );
 }

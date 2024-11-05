@@ -21,7 +21,7 @@ pub fn metropolis_hastings_online(
     // 分布を取得
     // todo : 引数処理の部分が正規分布と分離できていない
     let mut current_distribution = get_distribution("normal", &vec![current, sigma]);
-    let mut prior_distribution   = get_distribution("normal", &vec![prior_mu, prior_sigma]);
+    let prior_distribution = get_distribution("normal", &vec![prior_mu, prior_sigma]);
 
     // 提案分布としてrand_distrのNormalを使用
     let proposal_distribution = Normal::new(0.0, proposal_scale).unwrap();
@@ -34,16 +34,16 @@ pub fn metropolis_hastings_online(
 
         // 尤度計算
         // todo : 引数処理の部分が正規分布と分離できていない
-        let current_likelihood  = current_distribution.pdf(data);
+        let current_likelihood = current_distribution.pdf(data);
         current_distribution.update_parameters(&vec![proposal, sigma]);
         let proposal_likelihood = current_distribution.pdf(data);
 
         // 事前分布の計算
-        let current_prior  = prior_distribution.pdf(current);
+        let current_prior = prior_distribution.pdf(current);
         let proposal_prior = prior_distribution.pdf(proposal);
 
         // 事後分布の計算
-        let current_posterior  = current_likelihood * current_prior;
+        let current_posterior = current_likelihood * current_prior;
         let proposal_posterior = proposal_likelihood * proposal_prior;
 
         let acceptance_ratio = (proposal_posterior / current_posterior).min(1.0);
@@ -71,7 +71,7 @@ pub fn metropolis_hastings_bulk(
     data: &[f64],
     parameters: Vec<f64>,
     prior_parameters: Vec<f64>,
-    proposal_scale: f64
+    proposal_scale: f64,
 ) -> Vec<f64> {
     // [todo]
     //  - 事前・事後分布の実装はget_distributionで隠蔽できたので、stringの引数で分布を指定出来るようにする
@@ -79,11 +79,11 @@ pub fn metropolis_hastings_bulk(
 
     let mut rng = rand::thread_rng();
     let mut samples = Vec::new();
-    let mut init = parameters[0];
+    let init = parameters[0];
     let mut current = init;
 
     // 分布を取得
-    let current_distribution  = get_distribution(distribution_name, &parameters);
+    let current_distribution = get_distribution(distribution_name, &parameters);
     let mut proposal_distribution = get_distribution(distribution_name, &prior_parameters);
 
     // 提案分布としてrand_distrのNormalを使用
@@ -111,15 +111,18 @@ pub fn metropolis_hastings_bulk(
             proposal_distribution.update_parameters(&vec![proposal]);
         }
 
-        let current_likelihood:  f64 = data.iter().map( |&x| current_distribution.pdf(x).ln() ).sum();
-        let proposal_likelihood: f64 = data.iter().map( |&x| proposal_distribution.pdf(x).ln() ).sum();
+        let current_likelihood: f64 = data.iter().map(|&x| current_distribution.pdf(x).ln()).sum();
+        let proposal_likelihood: f64 = data
+            .iter()
+            .map(|&x| proposal_distribution.pdf(x).ln())
+            .sum();
 
         // 事前分布の計算(対数空間)
-        let current_prior  = current_distribution.pdf(current).ln();
+        let current_prior = current_distribution.pdf(current).ln();
         let proposal_prior = proposal_distribution.pdf(proposal).ln();
 
         // 事後分布の計算(対数空間)
-        let current_posterior  = current_likelihood + current_prior;
+        let current_posterior = current_likelihood + current_prior;
         let proposal_posterior = proposal_likelihood + proposal_prior;
 
         let acceptance_ratio = (proposal_posterior - current_posterior).exp().min(1.0);
