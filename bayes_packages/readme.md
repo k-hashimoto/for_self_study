@@ -1,5 +1,7 @@
 bays_studyで仮実装したやつをこっちに移植して正式版的にあつかう
 
+*自己学習用なので、ChatGPTが生成したコードが大半*
+
 ## Build
 ```
 cargo build -p bayes_packages
