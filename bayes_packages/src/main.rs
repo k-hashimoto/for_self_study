@@ -1,5 +1,6 @@
 mod modules;
 mod simple_linear_regiression;
+mod simple_linear_regiression_filein;
 mod simple_mean_bulk;
 mod simple_mean_online;
 mod simple_poisson;
@@ -27,6 +28,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     calculation_plans.insert(
         "--simple_linear_regiression",
         simple_linear_regiression::run,
+    );
+    calculation_plans.insert(
+        "--simple_linear_regiression_filein",
+        simple_linear_regiression_filein::run,
     );
 
     // 引数として渡ってきたものを実行する

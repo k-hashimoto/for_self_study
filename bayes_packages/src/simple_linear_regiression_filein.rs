@@ -3,6 +3,42 @@ use rand::Rng;
 use rand_distr::Normal;
 use statrs::distribution::{Continuous, Normal as StatrsNormal};
 
+use csv::ReaderBuilder;
+use std::error::Error;
+use std::fs::File;
+use std::path::Path;
+
+// ----------------------------------------------------------------------------------------------
+fn read_csv_to_float_vectors(file_path: &str) -> Result<(Vec<f64>, Vec<f64>), Box<dyn Error>> {
+    let file = File::open(Path::new(file_path))?;
+    let mut rdr = ReaderBuilder::new().from_reader(file);
+
+    let mut col1 = Vec::new();
+    let mut col2 = Vec::new();
+
+    for result in rdr.records() {
+        let record = result?;
+
+        // 各行が2カラムであることを仮定して、それぞれをf64に変換
+        if record.len() == 2 {
+            let first_column: f64 = record[0]
+                .parse()
+                .map_err(|_| "Failed to parse first column as f64")?;
+            let second_column: f64 = record[1]
+                .parse()
+                .map_err(|_| "Failed to parse second column as f64")?;
+
+            col1.push(first_column);
+            col2.push(second_column);
+        } else {
+            return Err("CSV file format error: Each row must have exactly 2 columns.".into());
+        }
+    }
+
+    Ok((col1, col2))
+}
+
+// ----------------------------------------------------------------------------------------------
 fn plot_results(
     x: &[f64],
     y: &[f64],
@@ -161,15 +197,18 @@ impl BayesianLinearRegression {
 }
 // ----------------------------------------------------------------------------------------------
 pub fn run() -> Result<(), Box<dyn std::error::Error>> {
-    let x = vec![1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0]; // 要素数を変更
-    let y = vec![2.1, 2.9, 3.7, 4.2, 5.1, 5.8, 6.1, 8.1, 11.4, 12.1]; // 要素数を変更
+    let (x, y) = match read_csv_to_float_vectors("./data/linear_regression/3-2-1-beer-sales-2.csv")
+    {
+        Ok((col1, col2)) => (col1, col2),
+        Err(err) => panic!("Somethig happen when reading csv."),
+    };
 
     let iterations = 10000;
 
     let model = BayesianLinearRegression::new(
-        StatrsNormal::new(0.0, 1.0).unwrap(),
-        StatrsNormal::new(0.0, 1.0).unwrap(),
-        StatrsNormal::new(0.0, 1.0).unwrap(),
+        StatrsNormal::new(0.0, 10.0).unwrap(),
+        StatrsNormal::new(0.0, 10.0).unwrap(),
+        StatrsNormal::new(0.0, 10.0).unwrap(),
     );
 
     let samples = model.metropolis_hastings(&x, &y, iterations);
