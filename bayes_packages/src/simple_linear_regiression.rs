@@ -28,6 +28,7 @@ impl BayesianLinearRegression {
         likelihood
     }
     fn posterior(&self, x: &[f64], y: &[f64], alpha: f64, beta: f64, sigma: f64) -> f64 {
+        // ベイズ更新
         self.likelihood(x, y, alpha, beta, sigma)
             * self.alpha_prior.pdf(alpha)
             * self.beta_prior.pdf(beta)
