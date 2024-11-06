@@ -39,17 +39,3 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     }
     Ok(())
 }
-
-//     if args[1] == "--simple_mean_online" {
-//         //cargo runを使う前提。cargo run -p bays_packages -- --simple_mean_online
-//         simple_mean_online::run()
-//     } else if args[1] == "--simple_mean_bulk" {
-//         simple_mean_bulk::run()
-//     } else if args[1] == "--simple_poisson" {
-//         simple_poisson::run()
-//     else if args[1] == "--simple_linear_regiression" {
-//         simple_linear_regiression::run()
-//     } else {
-//         panic!("有効な引数ではありません!");
-//     }
-// }
