@@ -108,7 +108,7 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
     trace_plot(&chains, 0, (iterations - burn_in) / 10, 35.0, 65.0);
 
     plot_mu1_kde_and_data_mean(
-        &chains[0],
+        &chains[3],
         &observations,
         "./plots/bayes_packages/distribution.png",
         1.0,
