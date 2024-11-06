@@ -118,7 +118,7 @@ pub fn print_mcmc_summary_table(
     posterior_mean: &f64,
     lower_bound: &f64,
     upper_bound: &f64,
-) {
+) -> Result<(), Box<dyn std::error::Error>> {
     let mut table = Table::new();
     table.add_row(Row::new(vec![Cell::new("項目"), Cell::new("説明")]));
     table.add_row(Row::new(vec![
@@ -141,4 +141,5 @@ pub fn print_mcmc_summary_table(
     ]));
     // テーブルを表示
     table.printstd();
+    Ok(())
 }
