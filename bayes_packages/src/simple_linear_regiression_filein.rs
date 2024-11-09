@@ -110,9 +110,14 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
     );
 
     // 4 チェーン生成する
-    let mut samples: Vec<(f64, f64, f64)> = Vec::new();
+    let mut samples: Vec<(f64, f64, f64)> = Vec::new(); // 平均値などの計算用
+    let mut chains: Vec<Vec<f64>> = Vec::new(); // MCMCの収束判定用。どのchainかを特定したい
     for _ in 0..4 {
         let _sample = model.metropolis_hastings(&x, &y, iterations, burn_in);
+
+        let (alpha_sample, beta_sample, _sigma_sample) = split_vec(&_sample, thinning_interval);
+        chains.push(alpha_sample);
+
         samples.extend(_sample);
     }
     let (alpha_samples, beta_samples, _sigma_samples) = split_vec(&samples, thinning_interval);
@@ -128,8 +133,6 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
 
 
     // let (alpha_samples, beta_samples, _sigma_samples) = split_vec(&samples, thinning_interval);
-    let mut chains: Vec<Vec<f64>> = Vec::new();
-    chains.push(alpha_samples);
 
     trace_plot(&chains, 0, (iterations - burn_in) / 10, 0.0, 20.0);
 
