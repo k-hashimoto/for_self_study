@@ -1,8 +1,9 @@
 #[allow(dead_code)]
 use csv::ReaderBuilder;
+use csv::Writer;
+
 use std::error::Error;
 use std::fs::File;
-
 // use csv::ReaderBuilder;
 // use std::error::Error;
 // use std::fs::File;
@@ -89,4 +90,17 @@ pub fn read_csv_to_float_vectors(file_path: &str) -> Result<(Vec<f64>, Vec<f64>)
     }
 
     Ok((col1, col2))
+}
+
+// ----------------------------------------------------------------------------------------------
+pub fn write_vectors_to_csv(file_path: &str, vec1: &Vec<f64>, vec2: &Vec<f64>) -> Result<(), Box<dyn Error>> {
+    let mut wtr = Writer::from_writer(File::create(file_path)?);
+
+    // 各要素をCSVに行として書き出す
+    for (&val1, &val2) in vec1.iter().zip(vec2.iter()) {
+        wtr.write_record(&[val1.to_string(), val2.to_string()])?;
+    }
+
+    wtr.flush()?;
+    Ok(())
 }

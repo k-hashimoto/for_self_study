@@ -86,49 +86,62 @@ impl BayesianLinearRegression {
         // 尤度：alpha + beta * xiで計算される推定値とyiの差分が実現する確率として計算
         // その尤度を使ってベイズ更新する。ベイズ更新した事後分布と更新前のそれの比をつかって受け入れ判定をする
 
+        let print_acceptance = true; // 最初の10行を出力するか
+
         let mut rng = rand::thread_rng();
         // 線形回帰モデルの各種パラメータの初期値
         // let mut alpha: f64 = rng.gen_range(-1.0..1.0);
         // let mut beta: f64 = rng.gen_range(-1.0..1.0);
-        // let mut sigma: f64 = rng.gen_range(0.1..2.0);
+//        let mut sigma: f64 = rng.gen_range(0.1..2.0);
 
         let mut alpha = y.iter().sum::<f64>() / y.len() as f64; // yの平均
         let mut beta = (y[y.len() - 1] - y[0]) / (x[x.len() - 1] - x[0]); // xとyの端点を使った傾きの推定
-        let mut sigma = 1.0; // 初期値を固定値で設定
-        let mena_init = 0.0;
+        let mut sigma = 300.0; // 初期値を固定値で設定
 
-        let mut num_accepted = 0;
+        let mena_init = 0.0;
+        print!("initial values : {:.3} {:.3} {:.3}\n", alpha, beta,sigma );
+        let mut num_accepted = 0; // MH法によってどのくらいのサンプルが採用されたかを確かめる為にカウントする
+        // 確認用
+        let mut acceptances:Vec<f64> = Vec::new();
+        let mut accepte_thresholds:Vec<f64> = Vec::new();
 
         let mut samples = vec![];
         for i in 0..iterations {
             // 各種パラメータをランダムに"少しだけ"動かす
-            let new_alpha = alpha + rng.sample(Normal::new(mena_init, proposal_scale).unwrap());
-            let new_beta = beta + rng.sample(Normal::new(mena_init, proposal_scale).unwrap());
-            let new_sigma = (sigma + rng.sample(Normal::new(mena_init, proposal_scale).unwrap())).abs();
+            let new_alpha = alpha + rng.sample(Normal::new(0.0, proposal_scale).unwrap());
+            let new_beta = beta + rng.sample(Normal::new(0.0, proposal_scale).unwrap());
+            let new_sigma = (sigma + rng.sample(Normal::new(0.0, proposal_scale).unwrap())).abs();
+
 
             // 尤度の計算とベイズ更新
             let current_posterior = self.posterior(x, y, alpha, beta, sigma);
             let proposed_posterior = self.posterior(x, y, new_alpha, new_beta, new_sigma);
-            let acceptance = proposed_posterior / current_posterior;
 
             // 受け入れ判定
-            if i < 5 {
+            let acceptance =  proposed_posterior - current_posterior; //対数なので割り算 => 引き算になる
+            let accepte_threshold = rng.gen::<f64>().ln();
+            if i < 10 && print_acceptance {
                 print!("  acceptance = {:.5} ", acceptance);
             }
-            if acceptance > rng.gen::<f64>() {
+
+            if acceptance > accepte_threshold {
                 alpha = new_alpha;
                 beta = new_beta;
                 sigma = new_sigma;
 
-                if i < 5 { print!(" +\n");}
+                if i < 10 && print_acceptance { print!(" +\n");}
                 num_accepted += 1;
             } else {
-                if i < 5 { print!("\n");}
+                if i < 10 && print_acceptance { print!("\n");}
             }
 
             samples.push((alpha, beta, sigma));
+            // 確認用
+            acceptances.push(acceptance);
+            accepte_thresholds.push(accepte_threshold);
         }
         print!("  number of accepted sample = {}({:.2}%)\n",num_accepted, 100. * (num_accepted as f64 / iterations as f64));
+        let _ = write_vectors_to_csv("./mcmc.csv", &acceptances, &accepte_thresholds);
         if samples.len() > burn_in {
             samples.split_off(burn_in)
         } else {
@@ -148,12 +161,12 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
     let iterations = 2000;
     let burn_in: usize = 1000;
     let thinning_interval = 1; // 薄化の間隔（例：10サンプルに1つを選択） 1000
-    let proposal_scale: f64 = 100.0;
+    let proposal_scale: f64 = 0.5;
 
     let model = BayesianLinearRegression::new(
-        StatrsNormal::new(0.0, 10.0).unwrap(),
-        StatrsNormal::new(0.0, 10.0).unwrap(),
-        StatrsNormal::new(0.0, 10.0).unwrap(),
+        StatrsNormal::new(0.0, 1.0).unwrap(),
+        StatrsNormal::new(0.0, 1.0).unwrap(),
+        StatrsNormal::new(0.0, 1.0).unwrap(),
     );
 
     // 4 チェーン生成する
