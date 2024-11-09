@@ -158,8 +158,8 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
         Err(_err) => panic!("Somethig happen when reading csv."),
     };
 
-    let iterations = 2000;
-    let burn_in: usize = 1000;
+    let iterations = 100000;
+    let burn_in: usize = 5000;
     let thinning_interval = 1; // 薄化の間隔（例：10サンプルに1つを選択） 1000
     let proposal_scale: f64 = 0.5;
 
