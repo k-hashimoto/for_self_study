@@ -1,7 +1,6 @@
 use plotters::prelude::*;
-use plotters::prelude::*;
 use prettytable::{Cell, Row, Table};
-use std::collections::HashMap; // HashMapをインポート
+// use std::collections::HashMap; // HashMapをインポート
 use std::f64::consts::PI;
 
 // mu1_samplesのカーネル密度推定とDATAの平均を描画しPNGに保存する関数

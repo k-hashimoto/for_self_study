@@ -1,11 +1,11 @@
-use plotters::prelude::*;
+// use plotters::prelude::*;
 use rand::Rng;
 use rand_distr::Normal;
 use statrs::distribution::{Continuous, Normal as StatrsNormal};
 use crate::modules::utils::*;
 use crate::modules::mcmc_tools::*;
 use crate::modules::mcmc_visualizer::*;
-use std::error::Error;
+// use std::error::Error;
 
 fn split_vec(vec: &Vec<(f64, f64, f64)>, thinning_interval: usize) -> (Vec<f64>, Vec<f64>, Vec<f64>) {
     let mut x: Vec<f64> = Vec::new();
@@ -67,9 +67,9 @@ impl BayesianLinearRegression {
         let mut samples = vec![];
         for _ in 0..iterations {
             // 各種パラメータをランダムに"少しだけ"動かす
-            let new_alpha = alpha + rng.sample(Normal::new(0.0, 1.0).unwrap());
-            let new_beta = beta + rng.sample(Normal::new(0.0, 1.0).unwrap());
-            let new_sigma = (sigma + rng.sample(Normal::new(0.0, 0.1).unwrap())).abs();
+            let new_alpha = alpha + rng.sample(Normal::new(0.0, 5.0).unwrap());
+            let new_beta = beta + rng.sample(Normal::new(0.0, 5.0).unwrap());
+            let new_sigma = (sigma + rng.sample(Normal::new(0.0, 0.5).unwrap())).abs();
 
             // 尤度の計算とベイズ更新
             let current_posterior = self.posterior(x, y, alpha, beta, sigma);
@@ -96,11 +96,11 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
     let (x, y) = match read_csv_to_float_vectors("./data/linear_regression/3-2-1-beer-sales-2.csv")
     {
         Ok((col1, col2)) => (col1, col2),
-        Err(err) => panic!("Somethig happen when reading csv."),
+        Err(_err) => panic!("Somethig happen when reading csv."),
     };
 
     let iterations = 100000;
-    let burn_in: usize = 5000;
+    let burn_in: usize = 50000;
     let thinning_interval = 10; // 薄化の間隔（例：10サンプルに1つを選択） 1000
 
     let model = BayesianLinearRegression::new(
@@ -112,29 +112,28 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
     // 4 チェーン生成する
     let mut samples: Vec<(f64, f64, f64)> = Vec::new(); // 平均値などの計算用
     let mut chains: Vec<Vec<f64>> = Vec::new(); // MCMCの収束判定用。どのchainかを特定したい
-    for _ in 0..4 {
-        let _sample = model.metropolis_hastings(&x, &y, iterations, burn_in);
+    for ichain in 0..4 {
+        print!("processing #{}th chain...\n", ichain);
+        let sample = model.metropolis_hastings(&x, &y, iterations, burn_in);
 
-        let (alpha_sample, beta_sample, _sigma_sample) = split_vec(&_sample, thinning_interval);
+        let (alpha_sample, beta_sample, sigma_sample) = split_vec(&sample, thinning_interval);
         chains.push(alpha_sample);
 
-        samples.extend(_sample);
+        samples.extend(sample);
     }
     let (alpha_samples, beta_samples, _sigma_samples) = split_vec(&samples, thinning_interval);
-
 
     let alpha = mean_normal_dist(&alpha_samples);
     let beta = mean_normal_dist(&beta_samples);
 
     // let (alpha, beta, _sigma) = samples.last().unwrap();
-
     // プロットを作成
     plot_results_linear_regression("./plots/bayes_packages/bayesian_regression_plot.png", &x, &y, alpha, beta, &samples)?;
 
 
     // let (alpha_samples, beta_samples, _sigma_samples) = split_vec(&samples, thinning_interval);
 
-    trace_plot(&chains, 0, (iterations - burn_in) / 10, 0.0, 20.0);
+    let _ = trace_plot(&chains, 0, (iterations - burn_in) / thinning_interval, 0.0, 20.0);
 
     println!("Plot saved as bayesian_regression_plot.png");
     Ok(())

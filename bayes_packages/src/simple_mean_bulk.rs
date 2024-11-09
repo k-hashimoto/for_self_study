@@ -102,10 +102,10 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
 
     println!("-------------------------------");
     // 推定結果
-    print_mcmc_summary_table(&true_mean, &posterior_mean, &lower_bound, &upper_bound);
+    let _ = print_mcmc_summary_table(&true_mean, &posterior_mean, &lower_bound, &upper_bound);
 
     // トレースプロットを生成してPNGに保存
-    trace_plot(&chains, 0, (iterations - burn_in) / 10, 35.0, 65.0);
+    let _ = trace_plot(&chains, 0, (iterations - burn_in) / 10, 35.0, 65.0);
 
     plot_mu1_kde_and_data_mean(
         &chains[3],
