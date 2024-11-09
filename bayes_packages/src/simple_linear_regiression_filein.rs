@@ -35,16 +35,6 @@ impl BayesianLinearRegression {
         }
     }
 
-    // fn likelihood(&self, x: &[f64], y: &[f64], alpha: f64, beta: f64, sigma: f64) -> f64 {
-    //     // 尤度の計算。推定値とデータ点の差分が実現する確率を計算
-    //     let mut likelihood = 1.0;
-    //     for (&xi, &yi) in x.iter().zip(y.iter()) {
-    //         let mean = alpha + beta * xi;
-    //         let dist = StatrsNormal::new(mean, sigma).unwrap();
-    //         likelihood *= dist.pdf(yi);
-    //     }
-    //     likelihood
-    // }
     fn likelihood(&self, x: &[f64], y: &[f64], alpha: f64, beta: f64, sigma: f64) -> f64 {
         // 対数で計算しないと、likelihood *= dist.pdf(yi)といったふうにゼロに近い値をデータ点の数だけかけるので限りなくゼロに近い値にになってしまう
         let n = x.len() as f64;
@@ -57,15 +47,6 @@ impl BayesianLinearRegression {
 
         log_likelihood
     }
-
-
-    // fn posterior(&self, x: &[f64], y: &[f64], alpha: f64, beta: f64, sigma: f64) -> f64 {
-    //     // ベイズ更新
-    //     self.likelihood(x, y, alpha, beta, sigma)
-    //         * self.alpha_prior.pdf(alpha)
-    //         * self.beta_prior.pdf(beta)
-    //         * self.sigma_prior.pdf(sigma)
-    // }
 
     fn posterior(&self, x: &[f64], y: &[f64], alpha: f64, beta: f64, sigma: f64) -> f64 {
         // 尤度の対数を計算
@@ -96,7 +77,7 @@ impl BayesianLinearRegression {
 
         let mut alpha = y.iter().sum::<f64>() / y.len() as f64; // yの平均
         let mut beta = (y[y.len() - 1] - y[0]) / (x[x.len() - 1] - x[0]); // xとyの端点を使った傾きの推定
-        let mut sigma = 300.0; // 初期値を固定値で設定
+        let mut sigma = 200.0; // 初期値を固定値で設定
 
         let mena_init = 0.0;
         print!("initial values : {:.3} {:.3} {:.3}\n", alpha, beta,sigma );
@@ -152,7 +133,7 @@ impl BayesianLinearRegression {
 }
 // ----------------------------------------------------------------------------------------------
 pub fn run() -> Result<(), Box<dyn std::error::Error>> {
-    let (x, y) = match read_csv_to_float_vectors("./data/linear_regression/3-2-1-beer-sales-2.csv")
+    let (y, x) = match read_csv_to_float_vectors("./data/linear_regression/3-2-1-beer-sales-2.csv")
     {
         Ok((col1, col2)) => (col1, col2),
         Err(_err) => panic!("Somethig happen when reading csv."),
@@ -160,8 +141,8 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
 
     let iterations = 100000;
     let burn_in: usize = 5000;
-    let thinning_interval = 1; // 薄化の間隔（例：10サンプルに1つを選択） 1000
-    let proposal_scale: f64 = 0.5;
+    let thinning_interval = 5; // 薄化の間隔（例：10サンプルに1つを選択） 1000
+    let proposal_scale: f64 = 0.1;
 
     let model = BayesianLinearRegression::new(
         StatrsNormal::new(0.0, 1.0).unwrap(),
@@ -180,10 +161,11 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
 
         samples.extend(sample);
     }
-    let (alpha_samples, beta_samples, _sigma_samples) = split_vec(&samples, thinning_interval);
+    let (alpha_samples, beta_samples, sigma_samples) = split_vec(&samples, thinning_interval);
     print!("number of final sample is {}\n", alpha_samples.len());
     let alpha = mean_normal_dist(&alpha_samples);
     let beta = mean_normal_dist(&beta_samples);
+    let sigma = mean_normal_dist(&sigma_samples);
 
     // let (alpha, beta, _sigma) = samples.last().unwrap();
     // プロットを作成
@@ -195,5 +177,12 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
     let _ = trace_plot(&chains, 0, (iterations - burn_in) / thinning_interval, 0.0, 20.0);
 
     println!("Plot saved as bayesian_regression_plot.png");
+
+    print!("------------------------------------------\n");
+    print!("# Result of Bayesian Liner Regression\n");
+    print!(" alpha = {:.4}\n", alpha);
+    print!(" beta = {:.4}\n", beta);
+    print!(" sigma = {:.4}\n", sigma);
+
     Ok(())
 }
