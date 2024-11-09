@@ -143,3 +143,95 @@ pub fn print_mcmc_summary_table(
     table.printstd();
     Ok(())
 }
+
+
+// ----------------------------------------------------------------------------------------------
+pub fn plot_results_linear_regression(
+    path: &str,
+    x: &[f64],
+    y: &[f64],
+    alpha: f64,
+    beta: f64,
+    samples: &[(f64, f64, f64)],
+) -> Result<(), Box<dyn std::error::Error>> {
+    let root = BitMapBackend::new(
+        path,
+        (800, 600),
+    )
+    .into_drawing_area();
+    root.fill(&WHITE)?;
+
+    // Determine x and y range dynamically based on data, adding a small margin
+    let x_min = *x.iter().min_by(|a, b| a.partial_cmp(b).unwrap()).unwrap() - 0.5;
+    let x_max = *x.iter().max_by(|a, b| a.partial_cmp(b).unwrap()).unwrap() + 0.5;
+    let y_min = *y.iter().min_by(|a, b| a.partial_cmp(b).unwrap()).unwrap() - 0.5;
+    let y_max = *y.iter().max_by(|a, b| a.partial_cmp(b).unwrap()).unwrap() + 0.5;
+
+    let mut chart = ChartBuilder::on(&root)
+        .caption(
+            "Bayesian Linear Regression with 95% Credible Interval",
+            ("sans-serif", 20).into_font(),
+        )
+        .margin(10)
+        .x_label_area_size(30)
+        .y_label_area_size(30)
+        .build_cartesian_2d(x_min..x_max, y_min..y_max)?;
+
+    chart.configure_mesh().draw()?;
+
+    // Plot the original data points
+    chart.draw_series(
+        x.iter()
+            .zip(y.iter())
+            .map(|(&xi, &yi)| Circle::new((xi, yi), 5, BLUE.filled())),
+    )?;
+
+    // Calculate 95% credible interval
+    let regression_line: Vec<_> = (0..100)
+        .map(|i| {
+            let xi = x_min + (x_max - x_min) * i as f64 / 100.0;
+            let mut predictions: Vec<f64> = samples.iter().map(|&(a, b, _)| a + b * xi).collect();
+            predictions.sort_by(|a, b| a.partial_cmp(b).unwrap());
+
+            // Get the 2.5th percentile and 97.5th percentile for 95% credible interval
+            let lower = predictions[(0.025 * predictions.len() as f64).round() as usize];
+            let upper = predictions[(0.975 * predictions.len() as f64).round() as usize];
+            let mean = alpha + beta * xi;
+            (xi, mean, lower, upper)
+        })
+        .collect();
+
+    // Draw the regression line
+    chart
+        .draw_series(LineSeries::new(
+            regression_line.iter().map(|&(xi, mean, _, _)| (xi, mean)),
+            &RED,
+        ))?
+        .label("Regression Line")
+        .legend(|(x, y)| PathElement::new(vec![(x, y), (x + 10, y)], &RED));
+
+    // Draw the 95% credible interval as a filled area
+    chart
+        .draw_series(AreaSeries::new(
+            regression_line
+                .iter()
+                .map(|&(xi, _, lower, _)| (xi, lower))
+                .chain(
+                    regression_line
+                        .iter()
+                        .rev()
+                        .map(|&(xi, _, _, upper)| (xi, upper)),
+                ),
+            0.0,
+            &RED.mix(0.2),
+        ))?
+        .label("95% Credible Interval")
+        .legend(|(x, y)| PathElement::new(vec![(x, y), (x + 10, y)], &RED.mix(0.2)));
+
+    chart
+        .configure_series_labels()
+        .background_style(&WHITE.mix(0.8))
+        .draw()?;
+
+    Ok(())
+}
