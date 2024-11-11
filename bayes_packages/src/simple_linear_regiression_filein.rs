@@ -73,8 +73,9 @@ impl BayesianLinearRegression {
         // 線形回帰モデルの各種パラメータの初期値
         // let mut alpha: f64 = rng.gen_range(-1.0..1.0);
         // let mut beta: f64 = rng.gen_range(-1.0..1.0);
-//        let mut sigma: f64 = rng.gen_range(0.1..2.0);
+        // let mut sigma: f64 = rng.gen_range(0.1..2.0);
 
+        //let mut alpha = 30.0; // yの平均
         let mut alpha = y.iter().sum::<f64>() / y.len() as f64; // yの平均
         let mut beta = (y[y.len() - 1] - y[0]) / (x[x.len() - 1] - x[0]); // xとyの端点を使った傾きの推定
         let mut sigma = 200.0; // 初期値を固定値で設定
@@ -140,7 +141,7 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
     };
 
     let iterations = 100000;
-    let burn_in: usize = 5000;
+    let burn_in: usize = 10000;
     let thinning_interval = 5; // 薄化の間隔（例：10サンプルに1つを選択） 1000
     let proposal_scale: f64 = 0.1;
 
