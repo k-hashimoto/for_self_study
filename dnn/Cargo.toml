@@ -1,0 +1,9 @@
+[package]
+name = "dnn"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+rand = "0.8"
+ndarray = "0.15"
+ndarray-rand = "0.14"
