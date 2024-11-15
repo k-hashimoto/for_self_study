@@ -7,6 +7,21 @@ use crate::modules::mcmc_tools::*;
 use crate::modules::mcmc_visualizer::*;
 // use std::error::Error;
 
+fn calculate_data_std_dev(data: &[f64]) -> f64 {
+    let n = data.len() as f64;
+
+    // データの平均を計算
+    let mean = data.iter().sum::<f64>() / n;
+
+    // 平均との差の二乗和を計算
+    let variance = data.iter()
+        .map(|value| (value - mean).powi(2))
+        .sum::<f64>() / n;
+
+    // 分散の平方根を取って標準偏差を返す
+    variance.sqrt()
+}
+
 fn split_vec(vec: &Vec<(f64, f64, f64)>, thinning_interval: usize) -> (Vec<f64>, Vec<f64>, Vec<f64>) {
     let mut x: Vec<f64> = Vec::new();
     let mut y: Vec<f64> = Vec::new();
@@ -78,7 +93,9 @@ impl BayesianLinearRegression {
         //let mut alpha = 30.0; // yの平均
         let mut alpha = y.iter().sum::<f64>() / y.len() as f64; // yの平均
         let mut beta = (y[y.len() - 1] - y[0]) / (x[x.len() - 1] - x[0]); // xとyの端点を使った傾きの推定
-        let mut sigma = 200.0; // 初期値を固定値で設定
+        // let mut sigma = 1.0; // 初期値を固定値で設定 -- 200.0
+        let mut sigma = calculate_data_std_dev(&y);
+        print!("initial sigma = {:.3}\n", &sigma);
 
         let mena_init = 0.0;
         print!("initial values : {:.3} {:.3} {:.3}\n", alpha, beta,sigma );
@@ -132,6 +149,7 @@ impl BayesianLinearRegression {
 
     }
 }
+
 // ----------------------------------------------------------------------------------------------
 pub fn run() -> Result<(), Box<dyn std::error::Error>> {
     let (y, x) = match read_csv_to_float_vectors("./data/linear_regression/3-2-1-beer-sales-2.csv")
@@ -141,9 +159,9 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
     };
 
     let iterations = 100000;
-    let burn_in: usize = 10000;
-    let thinning_interval = 5; // 薄化の間隔（例：10サンプルに1つを選択） 1000
-    let proposal_scale: f64 = 0.1;
+    let burn_in: usize = 50000;
+    let thinning_interval = 10; // 薄化の間隔（例：10サンプルに1つを選択） 1000
+    let proposal_scale: f64 = 0.5;
 
     let model = BayesianLinearRegression::new(
         StatrsNormal::new(0.0, 1.0).unwrap(),
@@ -181,8 +199,8 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
 
     print!("------------------------------------------\n");
     print!("# Result of Bayesian Liner Regression\n");
-    print!(" alpha = {:.4}\n", alpha);
-    print!(" beta = {:.4}\n", beta);
+    print!(" alpha(y切片) = {:.4}\n", alpha);
+    print!(" beta(傾き) = {:.4}\n", beta);
     print!(" sigma = {:.4}\n", sigma);
 
     Ok(())
