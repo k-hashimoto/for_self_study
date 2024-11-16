@@ -68,6 +68,7 @@ pub fn plot_mu1_kde_and_data_mean(
     Ok(())
 }
 pub fn trace_plot(
+    path: &str,
     chains: &Vec<Vec<f64>>,
     x_min: usize,
     x_max: usize,
@@ -75,7 +76,7 @@ pub fn trace_plot(
     y_max: f64,
 ) -> Result<(), Box<dyn std::error::Error>> {
     let root =
-        BitMapBackend::new("./plots/bayes_packages/trace_plot.png", (800, 600)).into_drawing_area();
+        BitMapBackend::new(path, (800, 600)).into_drawing_area();
     root.fill(&WHITE)?;
 
     let mut chart = ChartBuilder::on(&root)

@@ -22,6 +22,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut calculation_plans: HashMap<&str, fn() -> Result<(), Box<dyn std::error::Error>>> =
         HashMap::new();
 
+    calculation_plans.insert("--check", simple_linear_regiression_filein::check);
     calculation_plans.insert("--simple_mean_online", simple_mean_online::run);
     calculation_plans.insert("--simple_mean_bulk", simple_mean_bulk::run);
     calculation_plans.insert("--simple_poisson", simple_poisson::run);
