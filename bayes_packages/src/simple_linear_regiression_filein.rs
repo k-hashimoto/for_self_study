@@ -68,6 +68,10 @@ impl BayesianLinearRegression {
         log_likelihood
     }
 
+    // fn update_normal(&self, ) {
+
+    // }
+
     fn posterior(&self, x: &[f64], y: &[f64], alpha: f64, beta: f64, sigma: f64) -> f64 {
         // 尤度の対数を計算
         let log_likelihood = self.likelihood(x, y, alpha, beta, sigma);
@@ -94,7 +98,6 @@ impl BayesianLinearRegression {
         // let mut alpha: f64 = rng.gen_range(-1.0..1.0);
         // let mut beta: f64 = rng.gen_range(-1.0..1.0);
         // let mut sigma: f64 = rng.gen_range(0.1..2.0);
-
         let mut alpha = 20.0;
         let mut beta = 2.5;
         // let mut alpha = y.iter().sum::<f64>() / y.len() as f64; // yの平均
@@ -103,8 +106,8 @@ impl BayesianLinearRegression {
         let mut sigma = calculate_data_std_dev(&y);
         print!("initial sigma = {:.3}\n", &sigma);
 
-           // let mena_init = 0.0;
-        print!("initial values : alpha={:.3} bete={:.3} sigma={:.3}\n", alpha, beta,sigma );
+        // let mena_init = 0.0;
+        print!("initial values : alpha={:.3} bete={:.3} sigma={:.3}\n", alpha, beta, sigma );
         let mut num_accepted = 0; // MH法によってどのくらいのサンプルが採用されたかを確かめる為にカウントする
         // 確認用
         let mut acceptances:Vec<f64> = Vec::new();
@@ -177,7 +180,7 @@ pub fn check() -> Result<(), Box<dyn std::error::Error>> {
     println!(" sigma = {:?}", &sigma);
 
     println!("likelihood = {}", model.likelihood(&x, &y, alpha, beta, sigma));
-
+    println!("bayes update = {}", model.posterior(&x, &y, alpha, beta, sigma));
     Ok(())
 }
 
@@ -188,7 +191,7 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
         Ok((col1, col2)) => (col1, col2),
         Err(_err) => panic!("Somethig happen when reading csv."),
     };
-
+    println!("{}", &y[0]);
     let iterations = 1000000;
     let burn_in: usize = 50000;
     let thinning_interval = 10; // 薄化の間隔（例：10サンプルに1つを選択） 1000
@@ -228,8 +231,8 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
 
     print!("------------------------------------------\n");
     print!("# Result of Bayesian Liner Regression\n");
-    print!(" alpha(y切片, 20.92) = {:.4}\n", alpha);
-    print!(" beta(傾き, 2.47) = {:.4}\n", beta);
+    print!(" alpha(傾き, 2.47) = {:.4}\n", alpha);
+    print!(" beta(y切片, 20.92) = {:.4}\n", beta);
     print!(" sigma(17.09) = {:.4}\n", sigma);
     print!(" ()内の数値はR+Stanの時の値\n");
 
